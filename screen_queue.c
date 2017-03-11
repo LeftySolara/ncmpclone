@@ -22,8 +22,9 @@
  ***************************************************************************/
 
 #include "screen_queue.h"
-#include <stdlib.h>
+
 #include <mpd/client.h>
+#include <stdlib.h>
 
 /* Create an ncurses menu containing the current queue. If NULL is passed for
  * win, use stdscr */

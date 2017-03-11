@@ -23,6 +23,7 @@
 
 #include "playlist.h"
 #include "screen_queue.h"
+
 #include <menu.h>
 #include <mpd/client.h>
 #include <stdio.h>

@@ -25,6 +25,7 @@
 #define NCMPCLONE_SCREEN_QUEUE_H
 
 #include "playlist.h"
+
 #include <menu.h>
 
 MENU *create_queue_menu(struct playlist *plist, WINDOW *win);

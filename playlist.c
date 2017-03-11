@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 #include "playlist.h"
+
 #include <stdlib.h>
 
 /* Get a list of songs from the current queue */
