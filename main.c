@@ -21,10 +21,13 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include <ncurses.h>
+#include "playlist.h"
+#include "screen_queue.h"
+#include <menu.h>
 #include <mpd/client.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #define MPD_DEFAULT_HOST "localhost"
 #define MPD_DEFAULT_PORT 6600
@@ -43,7 +46,10 @@ int main() {
         exit(1);
     }
 
+    struct playlist *plist = get_current_playlist(mpd_conn);
+
     /* Initialize ncurses */
+    setlocale(LC_ALL, "");
     initscr();
     cbreak();
     noecho();
@@ -51,18 +57,33 @@ int main() {
     nodelay(stdscr, 1);
     keypad(stdscr, TRUE);
 
-    int x = getmaxx(stdscr) / 2;
-    int y = getmaxy(stdscr) / 2;
     mvprintw(LINES - 1, 0, "Press F1 to exit");
-    mvprintw(y, x, "Hello world!");
+
+    MENU *queue_menu = create_queue_menu(plist, NULL);
+    set_menu_format(queue_menu, LINES - 5, 1);
+    post_menu(queue_menu);
     refresh();
 
     int ch;
     while ((ch = getch()) != KEY_F(1)) {
-        ;
+        switch(ch) {
+            case KEY_UP:
+                menu_driver(queue_menu, REQ_UP_ITEM);
+                break;
+            case KEY_DOWN:
+                menu_driver(queue_menu, REQ_DOWN_ITEM);
+                break;
+        }
     }
 
+    /* Free memory used by menu and its items */
+    ITEM **queue_menu_items = menu_items(queue_menu);
+    free_menu(queue_menu);
+    for (int i = 0; i < plist->song_count; ++i)
+        free_item(queue_menu_items[i]);
     endwin();
+
+    free_playlist(plist);
     mpd_connection_free(mpd_conn);
 
     return 0;
