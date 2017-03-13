@@ -25,6 +25,7 @@
 
 #include <mpd/client.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Create an ncurses menu containing the current queue. If NULL is passed for
  * win, use stdscr */
@@ -36,17 +37,14 @@ MENU *create_queue_menu(struct playlist *plist, WINDOW *win)
         win = stdscr;
 
     const int num_songs = plist->song_count;
-    char *artist;
-    char *title;
+    const char *label;
     MENU *menu;
     ITEM **queue_menu_items;
 
-    queue_menu_items = (ITEM **)calloc(num_songs + 1, sizeof(plist->songs[0]));
-    queue_menu_items[num_songs] = (ITEM *)NULL;
+    queue_menu_items = calloc(num_songs, sizeof(ITEM *));
     for (int i = 0; i < num_songs; ++i) {
-        artist = mpd_song_get_tag(plist->songs[i], MPD_TAG_ARTIST, 0);
-        title = mpd_song_get_tag(plist->songs[i], MPD_TAG_TITLE, 0);
-        queue_menu_items[i] = new_item(artist, title);
+        label = get_track_label(plist->songs[i]);
+        queue_menu_items[i] = new_item(label, "");
     }
 
     menu = new_menu(queue_menu_items);
@@ -54,4 +52,23 @@ MENU *create_queue_menu(struct playlist *plist, WINDOW *win)
     set_menu_sub(menu, win);
 
     return menu;
+}
+
+/* Create a song label of the format "artist - title" */
+char *get_track_label(struct mpd_song *song)
+{
+    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
+    char *buffer = malloc(strlen(artist) + strlen(title) + 4);
+
+    if (buffer == NULL) {
+        printf("Cannot create track label. No memory available.");
+    }
+    else {
+        strcpy(buffer, artist);
+        strcat(buffer, " - ");
+        strcat(buffer, title);
+    }
+
+    return buffer;
 }
