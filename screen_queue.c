@@ -21,6 +21,8 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
+// TODO: Write function for scaling screen on window resize
+
 #include "screen_queue.h"
 
 #include <mpd/client.h>
@@ -86,7 +88,7 @@ char *get_track_duration(struct mpd_song *song)
     else {
         int minutes = mpd_song_get_duration(song) / 60;
         int seconds = mpd_song_get_duration(song) % 60;
-        snprintf(buffer, buf_size, "%d:%02d", minutes, seconds);
+        snprintf(buffer, buf_size, "%3d:%02d", minutes, seconds);
     }
 
     return buffer;
