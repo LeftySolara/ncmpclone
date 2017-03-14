@@ -30,5 +30,6 @@
 
 MENU *create_queue_menu(struct playlist *plist, WINDOW *win);
 char *get_track_label(struct mpd_song *song);
+char *get_track_duration(struct mpd_song *song);
 
 #endif //NCMPCLONE_SCREEN_QUEUE_H

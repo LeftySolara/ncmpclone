@@ -38,13 +38,15 @@ MENU *create_queue_menu(struct playlist *plist, WINDOW *win)
 
     const int num_songs = plist->song_count;
     const char *label;
+    const char *duration;
     MENU *menu;
     ITEM **queue_menu_items;
 
     queue_menu_items = calloc(num_songs, sizeof(ITEM *));
     for (int i = 0; i < num_songs; ++i) {
         label = get_track_label(plist->songs[i]);
-        queue_menu_items[i] = new_item(label, "");
+        duration = get_track_duration(plist->songs[i]);
+        queue_menu_items[i] = new_item(label, duration);
     }
 
     menu = new_menu(queue_menu_items);
@@ -68,6 +70,23 @@ char *get_track_label(struct mpd_song *song)
         strcpy(buffer, artist);
         strcat(buffer, " - ");
         strcat(buffer, title);
+    }
+
+    return buffer;
+}
+
+/* Create a human-readable string representing a song's duration */
+char *get_track_duration(struct mpd_song *song)
+{
+    const int buf_size = 7;
+    char *buffer = calloc(buf_size, sizeof(char));
+
+    if (buffer == NULL)
+        printf("Cannot create duration string. Not enough memory available.");
+    else {
+        int minutes = mpd_song_get_duration(song) / 60;
+        int seconds = mpd_song_get_duration(song) % 60;
+        snprintf(buffer, buf_size, "%d:%02d", minutes, seconds);
     }
 
     return buffer;
