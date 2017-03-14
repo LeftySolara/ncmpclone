@@ -83,11 +83,7 @@ int main() {
         }
     }
 
-    /* Free memory used by menu and its items */
-    ITEM **queue_menu_items = menu_items(queue_menu);
-    free_menu(queue_menu);
-    for (int i = 0; i < plist->song_count; ++i)
-        free_item(queue_menu_items[i]);
+    free_queue_menu(queue_menu);
     endwin();
 
     free_playlist(plist);

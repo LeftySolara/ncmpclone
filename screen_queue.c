@@ -58,6 +58,17 @@ MENU *create_queue_menu(struct playlist *plist, WINDOW *win)
     return menu;
 }
 
+/* Free memory used by a queue menu */
+void free_queue_menu(MENU *queue_menu)
+{
+    ITEM **queue_menu_items = menu_items(queue_menu);
+    const int item_count = queue_menu->nitems;
+
+    for (int i = 0; i < item_count; ++i)
+        free_item(queue_menu_items[i]);
+    free_menu(queue_menu);
+}
+
 /* Create a song label of the format "artist - title" */
 char *get_track_label(struct mpd_song *song)
 {

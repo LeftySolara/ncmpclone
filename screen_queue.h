@@ -29,6 +29,7 @@
 #include <menu.h>
 
 MENU *create_queue_menu(struct playlist *plist, WINDOW *win);
+void free_queue_menu(MENU *queue_menu);
 char *get_track_label(struct mpd_song *song);
 char *get_track_duration(struct mpd_song *song);
 
