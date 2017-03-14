@@ -74,6 +74,12 @@ int main() {
             case KEY_DOWN:
                 menu_driver(queue_menu, REQ_DOWN_ITEM);
                 break;
+            case KEY_PPAGE:
+                menu_driver(queue_menu, REQ_SCR_UPAGE);
+                break;
+            case KEY_NPAGE:
+                menu_driver(queue_menu, REQ_SCR_DPAGE);
+                break;
         }
     }
 
