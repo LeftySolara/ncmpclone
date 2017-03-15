@@ -57,33 +57,33 @@ int main() {
     curs_set(0);
     nodelay(stdscr, 1);
     keypad(stdscr, TRUE);
-
-    mvprintw(LINES - 1, 0, "Press F1 to exit");
-
-    MENU *queue_menu = create_queue_menu(plist, NULL);
-    set_menu_format(queue_menu, LINES - 5, 1);
-    post_menu(queue_menu);
     refresh();
 
+    struct screen_queue *queue = create_screen_queue(plist);
+    nodelay(queue->win, 1);
+    keypad(queue->win, TRUE);
+    post_menu(queue->menu);
+    wrefresh(queue->win);
+
     int ch;
-    while ((ch = getch()) != KEY_F(1)) {
+    while ((ch = wgetch(queue->win)) != KEY_F(1)) {
         switch(ch) {
             case KEY_UP:
-                menu_driver(queue_menu, REQ_UP_ITEM);
+                menu_driver(queue->menu, REQ_UP_ITEM);
                 break;
             case KEY_DOWN:
-                menu_driver(queue_menu, REQ_DOWN_ITEM);
+                menu_driver(queue->menu, REQ_DOWN_ITEM);
                 break;
             case KEY_PPAGE:
-                menu_driver(queue_menu, REQ_SCR_UPAGE);
+                menu_driver(queue->menu, REQ_SCR_UPAGE);
                 break;
             case KEY_NPAGE:
-                menu_driver(queue_menu, REQ_SCR_DPAGE);
+                menu_driver(queue->menu, REQ_SCR_DPAGE);
                 break;
         }
     }
 
-    free_queue_menu(queue_menu);
+    free_screen_queue(queue);
     endwin();
 
     free_playlist(plist);

@@ -28,6 +28,13 @@
 
 #include <menu.h>
 
+struct screen_queue {
+    WINDOW *win;
+    MENU *menu;
+};
+
+struct screen_queue *create_screen_queue(struct playlist *plist);
+void free_screen_queue(struct screen_queue *screen);
 MENU *create_queue_menu(struct playlist *plist, WINDOW *win);
 void free_queue_menu(MENU *queue_menu);
 char *get_track_label(struct mpd_song *song);
