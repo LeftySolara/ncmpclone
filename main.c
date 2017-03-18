@@ -23,6 +23,7 @@
 
 #include "playlist.h"
 #include "screen_queue.h"
+#include "title_bar.h"
 
 #include <menu.h>
 #include <mpd/client.h>
@@ -65,6 +66,9 @@ int main() {
     post_menu(queue->menu);
     wrefresh(queue->win);
 
+    struct title_bar *title_bar = title_bar_init("Queue", mpd_conn);
+    title_bar_draw(title_bar);
+
     int ch;
     while ((ch = wgetch(queue->win)) != KEY_F(1)) {
         switch(ch) {
@@ -84,6 +88,7 @@ int main() {
     }
 
     free_screen_queue(queue);
+    title_bar_free(title_bar);
     endwin();
 
     free_playlist(plist);
