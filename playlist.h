@@ -32,7 +32,7 @@ struct playlist {
     struct mpd_song **songs;
 };
 
-struct playlist *get_current_playlist(struct mpd_connection *conn);
-void free_playlist(struct playlist *plist);
+struct playlist *playlist_get_queue(struct mpd_connection *conn);
+void playlist_free(struct playlist *plist);
 
 #endif //NCMPCLONE_PLAYLIST_H

@@ -48,7 +48,7 @@ int main() {
         exit(1);
     }
 
-    struct playlist *plist = get_current_playlist(mpd_conn);
+    struct playlist *plist = playlist_get_queue(mpd_conn);
 
     /* Initialize ncurses */
     setlocale(LC_ALL, "");
@@ -91,7 +91,7 @@ int main() {
     title_bar_free(title_bar);
     endwin();
 
-    free_playlist(plist);
+    playlist_free(plist);
     mpd_connection_free(mpd_conn);
 
     return 0;

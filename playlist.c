@@ -26,7 +26,7 @@
 #include <stdlib.h>
 
 /* Get a list of songs from the current queue */
-struct playlist *get_current_playlist(struct mpd_connection *conn)
+struct playlist *playlist_get_queue(struct mpd_connection *conn)
 {
     struct playlist *plist;
     struct mpd_song *song;
@@ -47,7 +47,7 @@ struct playlist *get_current_playlist(struct mpd_connection *conn)
 }
 
 /* Free memory used by a playlist */
-void free_playlist(struct playlist *plist)
+void playlist_free(struct playlist *plist)
 {
     // TODO: Write function for removing individual songs from a playlist
     int song_count = plist->song_count;
