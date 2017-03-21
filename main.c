@@ -60,34 +60,14 @@ int main() {
     keypad(stdscr, TRUE);
     refresh();
 
-    struct screen_queue *queue = create_screen_queue(plist);
-    nodelay(queue->win, 1);
-    keypad(queue->win, TRUE);
-    post_menu(queue->menu);
-    wrefresh(queue->win);
-
     struct title_bar *title_bar = title_bar_init("Queue", mpd_conn);
     title_bar_draw(title_bar);
 
     int ch;
-    while ((ch = wgetch(queue->win)) != KEY_F(1)) {
-        switch(ch) {
-            case KEY_UP:
-                menu_driver(queue->menu, REQ_UP_ITEM);
-                break;
-            case KEY_DOWN:
-                menu_driver(queue->menu, REQ_DOWN_ITEM);
-                break;
-            case KEY_PPAGE:
-                menu_driver(queue->menu, REQ_SCR_UPAGE);
-                break;
-            case KEY_NPAGE:
-                menu_driver(queue->menu, REQ_SCR_DPAGE);
-                break;
-        }
+    while ((ch = getch()) != KEY_F(1)) {
+        ;
     }
 
-    free_screen_queue(queue);
     title_bar_free(title_bar);
     endwin();
 

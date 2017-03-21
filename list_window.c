@@ -1,5 +1,5 @@
 /******************************************************************************
- * screen_queue.h : display current queue to user
+ * list_window.c : window for displaying items in a selectable, menu-like list
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,21 +21,4 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#ifndef NCMPCLONE_SCREEN_QUEUE_H
-#define NCMPCLONE_SCREEN_QUEUE_H
-
-#include "playlist.h"
-#include "title_bar.h"
-
-struct screen_queue {
-    struct title_bar *title_bar;
-};
-
-//struct screen_queue *create_screen_queue(struct playlist *plist);
-//void free_screen_queue(struct screen_queue *screen);
-//MENU *create_queue_menu(struct playlist *plist, WINDOW *win);
-//void free_queue_menu(MENU *queue_menu);
-//char *get_track_label(struct mpd_song *song);
-//char *get_track_duration(struct mpd_song *song);
-
-#endif //NCMPCLONE_SCREEN_QUEUE_H
+#include "list_window.h"

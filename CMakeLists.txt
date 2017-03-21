@@ -10,10 +10,10 @@ include_directories(${CURSES_INCLUDE_DIR})
 
 set(SOURCE_FILES
         main.c
-        screen.c
-        screen_queue.c
         title_bar.c
-        playlist.c)
+        playlist.c
+        list_window.c
+        list_menu.c)
 add_executable(ncmpclone ${SOURCE_FILES})
 target_link_libraries(ncmpclone -lmenu ${CURSES_LIBRARIES})
 target_link_libraries(ncmpclone mpdclient)
