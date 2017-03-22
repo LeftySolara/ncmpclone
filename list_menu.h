@@ -27,6 +27,7 @@
 #define NCMPCLONE_LIST_MENU_H
 
 #include <stdbool.h>
+#include <ncurses.h>
 
 struct row {
     char *text;
@@ -38,6 +39,7 @@ struct row {
 
 struct row *row_init(char *text, char *desc);
 void row_free(struct row *row);
+void row_draw(int pos, struct row *row, WINDOW *win);
 
 
 struct list {

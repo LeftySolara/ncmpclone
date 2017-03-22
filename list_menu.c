@@ -44,6 +44,14 @@ void row_free(struct row *row)
     free(row);
 }
 
+/* Draw a row on the given window at row number pos */
+void row_draw(int pos, struct row *row, WINDOW *win)
+{
+    if (row->selected)
+        ; /* TODO: set colors here */
+    mvwaddstr(win, pos, 0, row->text);
+}
+
 struct list *list_init()
 {
     struct list *list = malloc(sizeof(struct list *));
