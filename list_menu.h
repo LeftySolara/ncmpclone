@@ -21,7 +21,35 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
+// TODO: Add colors to menu items
+
 #ifndef NCMPCLONE_LIST_MENU_H
 #define NCMPCLONE_LIST_MENU_H
+
+#include <stdbool.h>
+
+struct row {
+    char *text;
+    char *desc;
+    bool selected;
+    struct row *next;
+    struct row *prev;
+};
+
+struct row *row_init(char *text, char *desc);
+void row_free(struct row *row);
+
+
+struct list {
+    struct row *head;
+    int length;
+};
+
+struct list *list_init();
+void list_free(struct list *list);
+void list_append(char *text, char *desc, struct list *list);
+void list_erase(int pos, struct list *list);
+void list_clear(struct list *list);
+
 
 #endif //NCMPCLONE_LIST_MENU_H
