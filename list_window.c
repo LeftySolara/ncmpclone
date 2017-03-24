@@ -22,3 +22,28 @@
  ***************************************************************************/
 
 #include "list_window.h"
+#include <stdlib.h>
+
+/* Allocate memory for a list_menu window */
+struct list_window *list_window_init()
+{
+    struct list_window *list_window = malloc(sizeof(struct list_window *));
+    int width = getmaxx(stdscr);
+
+    list_window->win = newwin(LINES - 2, width, 2, 0);
+    list_window->queue_menu = list_menu_init();
+}
+
+/* Free memory used by a list_menu window */
+void list_window_free(struct list_window *list_window)
+{
+    delwin(list_window->win);
+    list_menu_free(list_window->queue_menu);
+    free(list_window);
+}
+
+/* Draw all rows to the screen */
+void list_window_draw(struct list_window *list_window)
+{
+
+}

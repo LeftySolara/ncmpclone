@@ -24,13 +24,18 @@
 #ifndef NCMPCLONE_LIST_WINDOW_H
 #define NCMPCLONE_LIST_WINDOW_H
 
+#include "list_menu.h"
 #include <ncurses.h>
 
 struct list_window {
     WINDOW *win;
-    int rows;
-    int cols;
-    int selected_index;
+    struct list_menu *queue_menu;
 };
+
+struct list_window *list_window_init();
+void list_window_free(struct list_window *list_window);
+void list_window_draw(struct list_window *list_window);
+void list_window_add_row(struct list_window *list_window, struct row *row);
+void list_window_remove_selected(struct list_window *list_window);
 
 #endif //NCMPCLONE_LIST_WINDOW_H

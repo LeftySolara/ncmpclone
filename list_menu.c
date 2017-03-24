@@ -52,48 +52,48 @@ void row_draw(int pos, struct row *row, WINDOW *win)
     mvwaddstr(win, pos, 0, row->text);
 }
 
-struct list *list_init()
+struct list_menu *list_menu_init()
 {
-    struct list *list = malloc(sizeof(struct list *));
-    list->head = NULL;
-    list->length = 0;
+    struct list_menu *list_menu = malloc(sizeof(struct list_menu *));
+    list_menu->head = NULL;
+    list_menu->length = 0;
 
-    return list;
+    return list_menu;
 }
 
-void list_free(struct list *list)
+void list_menu_free(struct list_menu *list_menu)
 {
-    list_clear(list);
-    free(list);
+    list_menu_clear(list_menu);
+    free(list_menu);
 }
 
-/* Add a row to the end of the list */
-void list_append(char *text, char *desc, struct list *list)
+/* Add a row to the end of the list_menu */
+void list_menu_append(char *text, char *desc, struct list_menu *list_menu)
 {
     struct row *row = row_init(text, desc);
 
-    if (list->head == NULL)
-        list->head = row;
+    if (list_menu->head == NULL)
+        list_menu->head = row;
     else {
-        struct row *current = list->head;
+        struct row *current = list_menu->head;
         while (current->next)
             current = current->next;
         current->next = row;
         row->prev = current;
     }
-    ++list->length;
+    ++list_menu->length;
 }
 
-/* Remove the item at position pos from the list */
-void list_erase(int pos, struct list *list)
+/* Remove the item at position pos from the list_menu */
+void list_menu_erase(int pos, struct list_menu *list_menu)
 {
-    if (pos > list->length)
+    if (pos > list_menu->length)
         return;
 
-    struct row *current = list->head;
+    struct row *current = list_menu->head;
     if (pos == 0) {  /* Item is the head */
-        list->head = current->next;
-        list->head->prev = NULL;
+        list_menu->head = current->next;
+        list_menu->head->prev = NULL;
     }
     else {
         for (int i = 0; i < pos; ++i)
@@ -104,17 +104,17 @@ void list_erase(int pos, struct list *list)
             current->next->prev = current->prev;
     }
     row_free(current);
-    --list->length;
+    --list_menu->length;
 }
 
-/* Remove all items from list. This does not free the memory used by the list */
-void list_clear(struct list *list)
+/* Remove all items from list_menu. This does not free the memory used by the list_menu */
+void list_menu_clear(struct list_menu *list_menu)
 {
-    struct row *current = list->head;
-    while (list->head) {
-        list->head = current->next;
+    struct row *current = list_menu->head;
+    while (list_menu->head) {
+        list_menu->head = current->next;
         row_free(current);
-        current = list->head;
-        --list->length;
+        current = list_menu->head;
+        --list_menu->length;
     }
 }

@@ -42,16 +42,19 @@ void row_free(struct row *row);
 void row_draw(int pos, struct row *row, WINDOW *win);
 
 
-struct list {
+struct list_menu {
     struct row *head;
     int length;
+    int selected_index;
 };
 
-struct list *list_init();
-void list_free(struct list *list);
-void list_append(char *text, char *desc, struct list *list);
-void list_erase(int pos, struct list *list);
-void list_clear(struct list *list);
+struct list_menu *list_menu_init();
+void list_menu_free(struct list_menu *list_menu);
+void list_menu_append(char *text, char *desc, struct list_menu *list_menu);
+void list_menu_erase(int pos, struct list_menu *list_menu);
+void list_menu_clear(struct list_menu *list_menu);
+void list_menu_select_next(struct list_menu *list_menu);
+void list_menu_select_prev(struct list_menu *list_menu);
 
 
 #endif //NCMPCLONE_LIST_MENU_H
