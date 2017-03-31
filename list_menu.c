@@ -24,97 +24,97 @@
 #include "list_menu.h"
 #include <stdlib.h>
 
-struct row *row_init(char *text, char *desc)
-{
-    struct row *row = malloc(sizeof(struct row *));
-
-    row->text = text;
-    row->desc = desc;
-    row->next = NULL;
-    row->prev = NULL;
-    row->selected = false;
-
-    return row;
-}
-
-void row_free(struct row *row)
-{
-    row->prev = NULL;
-    row->next = NULL;
-    free(row);
-}
-
-/* Draw a row on the given window at row number pos */
-void row_draw(int pos, struct row *row, WINDOW *win)
-{
-    if (row->selected)
-        ; /* TODO: set colors here */
-    mvwaddstr(win, pos, 0, row->text);
-}
-
-struct list_menu *list_menu_init()
-{
-    struct list_menu *list_menu = malloc(sizeof(struct list_menu *));
-    list_menu->head = NULL;
-    list_menu->length = 0;
-
-    return list_menu;
-}
-
-void list_menu_free(struct list_menu *list_menu)
-{
-    list_menu_clear(list_menu);
-    free(list_menu);
-}
-
-/* Add a row to the end of the list_menu */
-void list_menu_append(char *text, char *desc, struct list_menu *list_menu)
-{
-    struct row *row = row_init(text, desc);
-
-    if (list_menu->head == NULL)
-        list_menu->head = row;
-    else {
-        struct row *current = list_menu->head;
-        while (current->next)
-            current = current->next;
-        current->next = row;
-        row->prev = current;
-    }
-    ++list_menu->length;
-}
-
-/* Remove the item at position pos from the list_menu */
-void list_menu_erase(int pos, struct list_menu *list_menu)
-{
-    if (pos > list_menu->length)
-        return;
-
-    struct row *current = list_menu->head;
-    if (pos == 0) {  /* Item is the head */
-        list_menu->head = current->next;
-        list_menu->head->prev = NULL;
-    }
-    else {
-        for (int i = 0; i < pos; ++i)
-            current = current->next;
-
-        current->prev->next = current->next;
-        if (current->next)  /* Not at the tail */
-            current->next->prev = current->prev;
-    }
-    row_free(current);
-    --list_menu->length;
-}
-
-/* Remove all items from list_menu. This does not free the memory used by the list_menu */
-void list_menu_clear(struct list_menu *list_menu)
-{
-    struct row *current = list_menu->head;
-    while (list_menu->head) {
-        list_menu->head = current->next;
-        row_free(current);
-        current = list_menu->head;
-        --list_menu->length;
-    }
-}
+//struct row *row_init(char *text, char *desc)
+//{
+//    struct row *row = malloc(sizeof(struct row *));
+//
+//    row->text = text;
+//    row->desc = desc;
+//    row->next = NULL;
+//    row->prev = NULL;
+//    row->selected = false;
+//
+//    return row;
+//}
+//
+//void row_free(struct row *row)
+//{
+//    row->prev = NULL;
+//    row->next = NULL;
+//    free(row);
+//}
+//
+///* Draw a row on the given window at row number pos */
+//void row_draw(int pos, struct row *row, WINDOW *win)
+//{
+//    if (row->selected)
+//        ; /* TODO: set colors here */
+//    mvwaddstr(win, pos, 0, row->text);
+//}
+//
+//struct list_menu *list_menu_init()
+//{
+//    struct list_menu *list_menu = malloc(sizeof(struct list_menu *));
+//    list_menu->head = NULL;
+//    list_menu->length = 0;
+//
+//    return list_menu;
+//}
+//
+//void list_menu_free(struct list_menu *list_menu)
+//{
+//    list_menu_clear(list_menu);
+//    free(list_menu);
+//}
+//
+///* Add a row to the end of the list_menu */
+//void list_menu_append(char *text, char *desc, struct list_menu *list_menu)
+//{
+//    struct row *row = row_init(text, desc);
+//
+//    if (list_menu->head == NULL)
+//        list_menu->head = row;
+//    else {
+//        struct row *current = list_menu->head;
+//        while (current->next)
+//            current = current->next;
+//        current->next = row;
+//        row->prev = current;
+//    }
+//    ++list_menu->length;
+//}
+//
+///* Remove the item at position pos from the list_menu */
+//void list_menu_erase(int pos, struct list_menu *list_menu)
+//{
+//    if (pos > list_menu->length)
+//        return;
+//
+//    struct row *current = list_menu->head;
+//    if (pos == 0) {  /* Item is the head */
+//        list_menu->head = current->next;
+//        list_menu->head->prev = NULL;
+//    }
+//    else {
+//        for (int i = 0; i < pos; ++i)
+//            current = current->next;
+//
+//        current->prev->next = current->next;
+//        if (current->next)  /* Not at the tail */
+//            current->next->prev = current->prev;
+//    }
+//    row_free(current);
+//    --list_menu->length;
+//}
+//
+///* Remove all items from list_menu. This does not free the memory used by the list_menu */
+//void list_menu_clear(struct list_menu *list_menu)
+//{
+//    struct row *current = list_menu->head;
+//    while (list_menu->head) {
+//        list_menu->head = current->next;
+//        row_free(current);
+//        current = list_menu->head;
+//        --list_menu->length;
+//    }
+//}

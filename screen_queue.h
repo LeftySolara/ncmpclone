@@ -31,6 +31,8 @@ struct screen_queue {
     struct title_bar *title_bar;
 };
 
+struct screen_queue *screen_queue_init(struct mpd_connection *mpd_conn);
+
 //struct screen_queue *create_screen_queue(struct playlist *plist);
 //void free_screen_queue(struct screen_queue *screen);
 //MENU *create_queue_menu(struct playlist *plist, WINDOW *win);

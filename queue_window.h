@@ -1,5 +1,5 @@
 /******************************************************************************
- * list_window.c : window for displaying items in a selectable, menu-like list
+ * window_queue.h : main window for the queue screen
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,29 +21,34 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include "list_window.h"
-#include <stdlib.h>
+#ifndef NCMPCLONE_WINDOW_QUEUE_H
+#define NCMPCLONE_WINDOW_QUEUE_H
 
-///* Allocate memory for a list_menu window */
-//struct list_window *list_window_init()
-//{
-//    struct list_window *list_window = malloc(sizeof(struct list_window *));
-//    int width = getmaxx(stdscr);
-//
-//    list_window->win = newwin(LINES - 2, width, 2, 0);
-//    list_window->queue_menu = list_menu_init();
-//}
-//
-///* Free memory used by a list_menu window */
-//void list_window_free(struct list_window *list_window)
-//{
-//    delwin(list_window->win);
-//    list_menu_free(list_window->queue_menu);
-//    free(list_window);
-//}
-//
-///* Draw all rows to the screen */
-//void list_window_draw(struct list_window *list_window)
-//{
-//
-//}
+#include <stdbool.h>
+#include <ncurses.h>
+
+struct row {
+    char *song_label;
+    char *duration_label;
+    bool selected;
+    struct row *prev;
+    struct row *next;
+};
+
+struct row *row_init(char *song, char *duration);
+void row_free(struct row *row);
+void row_draw(struct row *row, WINDOW *win, int begin_y, int begin_x);
+
+struct queue_window {
+    WINDOW *win;
+    struct row *head;
+    struct row *selected;
+};
+
+struct queue_window *queue_window_init();
+void queue_window_free(struct queue_window *window);
+void queue_window_add_row(struct queue_window *window, char *song, char *duration);
+
+
+
+#endif //NCMPCLONE_WINDOW_QUEUE_H
