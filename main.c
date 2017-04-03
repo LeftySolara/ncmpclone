@@ -22,7 +22,6 @@
  ***************************************************************************/
 
 #include "playlist.h"
-//#include "screen_queue.h"
 #include "queue_window.h"
 #include "title_bar.h"
 

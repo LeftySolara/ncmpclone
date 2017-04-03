@@ -12,8 +12,6 @@ set(SOURCE_FILES
         main.c
         title_bar.c
         playlist.c
-        list_window.c
-        list_menu.c
         queue_window.c)
 add_executable(ncmpclone ${SOURCE_FILES})
 target_link_libraries(ncmpclone -lmenu ${CURSES_LIBRARIES})
