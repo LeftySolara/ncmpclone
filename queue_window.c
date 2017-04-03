@@ -25,17 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Draw a row on the window using data from a list node */
-//void row_draw(struct node *node, WINDOW *win, int begin_y, int begin_x)
-//{
-//    int song_label_maxlen = COLS - strlen(node->duration_label) - 1;
-//    mvwaddnstr(win, begin_y, begin_x, node->track_label, song_label_maxlen);
-//    mvwaddstr(win, begin_y, COLS - strlen(node->duration_label), node->duration_label);
-//    wrefresh(win);
-//}
-
-/*****************************************************************************/
-
 struct queue_window *queue_window_init()
 {
     struct queue_window *window = malloc(sizeof(*window));
@@ -59,4 +48,25 @@ void queue_window_add_row(struct queue_window *window, char *track_label,
                           char *duration_label)
 {
     list_append(window->track_list, track_label, duration_label);
+}
+
+/* Draw a row on the window using data from a list node */
+void queue_window_draw_row(struct node *node, WINDOW *win, int begin_y, int begin_x)
+{
+    int song_label_maxlen = COLS - strlen(node->duration_label) - 1;
+    mvwaddnstr(win, begin_y, begin_x, node->track_label, song_label_maxlen);
+    mvwaddstr(win, begin_y, COLS - strlen(node->duration_label), node->duration_label);
+    wrefresh(win);
+}
+
+/* Draw all nodes in a queue window's list */
+void queue_window_draw_all(struct queue_window *window)
+{
+    struct node *current = window->track_list->head;
+
+    int i = 0;
+    while (current) {
+        queue_window_draw_row(current, window->win, i++, 0);
+        current = current->next;
+    }
 }

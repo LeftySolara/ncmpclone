@@ -38,7 +38,8 @@ struct queue_window {
 struct queue_window *queue_window_init();
 void queue_window_free(struct queue_window *window);
 void queue_window_add_row(struct queue_window *window, char *track_label, char *duration_label);
-
+void queue_window_draw_row(struct node *node, WINDOW *win, int begin_y, int begin_x);
+void queue_window_draw_all(struct queue_window *window);
 
 
 #endif //NCMPCLONE_WINDOW_QUEUE_H

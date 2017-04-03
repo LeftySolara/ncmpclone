@@ -70,6 +70,7 @@ int main() {
     queue_window_add_row(queue_window, "song5", "duration5");
 
     title_bar_draw(title_bar);
+    queue_window_draw_all(queue_window);
 
 
     int ch;
