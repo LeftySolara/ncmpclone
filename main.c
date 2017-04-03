@@ -63,16 +63,14 @@ int main() {
     struct title_bar *title_bar = title_bar_init("Queue", mpd_conn);
     struct queue_window *queue_window = queue_window_init();
 
-    struct row *row = row_init("I've Got a Dark Alley and a Bad Idea that Says You Should Shut Your Mouth (Summer Song)", "duration1");
-
-//    queue_window_add_row(queue_window, "song1", "duration1");
-//    queue_window_add_row(queue_window, "song2", "duration2");
-//    queue_window_add_row(queue_window, "song3", "duration3");
-//    queue_window_add_row(queue_window, "song4", "duration4");
-//    queue_window_add_row(queue_window, "song5", "duration5");
+    queue_window_add_row(queue_window, "song1", "duration1");
+    queue_window_add_row(queue_window, "song2", "duration2");
+    queue_window_add_row(queue_window, "song3", "duration3");
+    queue_window_add_row(queue_window, "song4", "duration4");
+    queue_window_add_row(queue_window, "song5", "duration5");
 
     title_bar_draw(title_bar);
-    row_draw(row, queue_window->win, 0,0);
+
 
     int ch;
     while ((ch = getch()) != 'q') {
@@ -81,7 +79,6 @@ int main() {
 
     title_bar_free(title_bar);
     queue_window_free(queue_window);
-    row_free(row);
     endwin();
 
     playlist_free(plist);

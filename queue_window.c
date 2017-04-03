@@ -25,74 +25,38 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Allocate and initialize memory for a row */
-struct row *row_init(char *song, char *duration)
-{
-    struct row *new_row = malloc(sizeof(struct row *));
-    new_row->song_label = strdup(song);
-    new_row->duration_label = strdup(duration);
-    new_row->selected = false;
-
-    return new_row;
-}
-
-/* Free memory used by a row */
-void row_free(struct row *row)
-{
-    free(row->song_label);
-    free(row->duration_label);
-    free(row);
-}
-
-/* Draw a row to the given window */
-void row_draw(struct row *row, WINDOW *win, int begin_y, int begin_x)
-{
-    int song_label_maxlen = COLS - strlen(row->duration_label) - 1;
-    mvwaddnstr(win, begin_y, begin_x, row->song_label, song_label_maxlen);
-    mvwaddstr(win, begin_y, COLS - strlen(row->duration_label), row->duration_label);
-    wrefresh(win);
-}
+/* Draw a row on the window using data from a list node */
+//void row_draw(struct node *node, WINDOW *win, int begin_y, int begin_x)
+//{
+//    int song_label_maxlen = COLS - strlen(node->duration_label) - 1;
+//    mvwaddnstr(win, begin_y, begin_x, node->track_label, song_label_maxlen);
+//    mvwaddstr(win, begin_y, COLS - strlen(node->duration_label), node->duration_label);
+//    wrefresh(win);
+//}
 
 /*****************************************************************************/
 
 struct queue_window *queue_window_init()
 {
-    struct queue_window *window = malloc(sizeof(struct queue_window *));
-    window->head = NULL;
-    window->selected = NULL;
+    struct queue_window *window = malloc(sizeof(*window));
 
     /* The window starts just under the title bar and uses the full width
      * of the screen */
     window->win = newwin(LINES - 2, COLS, 2, 0);
+    window->track_list = list_init();
+
+    return window;
 }
 
 void queue_window_free(struct queue_window *window)
 {
     delwin(window->win);
-    window->selected = NULL;
-
-    /* Free memory from all the rows */
-    struct row *temp = window->head;
-    while (window->head) {
-        window->head = window->head->next;
-        row_free(temp);
-        temp = window->head;
-    }
-
+    list_free(window->track_list);
     free(window);
 }
 
-void queue_window_add_row(struct queue_window *window, char *song, char *duration)
+void queue_window_add_row(struct queue_window *window, char *track_label,
+                          char *duration_label)
 {
-    struct row *row = row_init(song, duration);
-
-    if (!window->head)
-        window->head = row;
-    else {
-        struct row *temp = window->head;
-        while (temp->next)
-            temp = temp->next;
-        temp->next = row;
-        row->prev = temp;
-    }
+    list_append(window->track_list, track_label, duration_label);
 }

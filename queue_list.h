@@ -1,5 +1,5 @@
 /******************************************************************************
- * window_queue.h : main window for the queue screen
+ * queue_list.h : Doubly Linked List for queue menu items
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,24 +21,32 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#ifndef NCMPCLONE_WINDOW_QUEUE_H
-#define NCMPCLONE_WINDOW_QUEUE_H
+#ifndef NCMPCLONE_QUEUE_LIST_H
+#define NCMPCLONE_QUEUE_LIST_H
 
-#include "queue_list.h"
+#include <stdlib.h>
 
-#include <stdbool.h>
-#include <ncurses.h>
-
-struct queue_window {
-    WINDOW *win;
-    struct node *selected;
-    struct list *track_list;
+struct node {
+    char *track_label;
+    char *duration_label;
+    struct node *next;
+    struct node *prev;
 };
 
-struct queue_window *queue_window_init();
-void queue_window_free(struct queue_window *window);
-void queue_window_add_row(struct queue_window *window, char *track_label, char *duration_label);
+struct node *node_init(char *track_label, char *duration_label);
+void node_free(struct node *node);
 
+/*****************************************************************************/
 
+struct list {
+    struct node *head;
+    size_t length;
+};
 
-#endif //NCMPCLONE_WINDOW_QUEUE_H
+struct list *list_init();
+void list_free(struct list *list);
+void list_append(struct list *list, char *track_label, char *duration_label);
+void list_erase(struct list *list, size_t pos);
+void list_clear(struct list *list);
+
+#endif //NCMPCLONE_QUEUE_LIST_H
