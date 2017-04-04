@@ -80,8 +80,7 @@ void queue_window_draw_all(struct queue_window *window)
     }
 }
 
-/* Move the window's cursor down by one row */
-void queue_window_curs_down(struct queue_window *window)
+void queue_window_move_curs(struct queue_window *window, int direction)
 {
     struct node *current = window->selected;
 
@@ -94,31 +93,12 @@ void queue_window_curs_down(struct queue_window *window)
         current = window->selected;
     }
 
-    if (current->next) {
+    if (direction == CURS_MOVE_DOWN && current->next) {
         current->is_selected = false;
         current->next->is_selected = true;
         window->selected = current->next;
     }
-
-    queue_window_draw_all(window);
-    wrefresh(window->win);
-}
-
-/* Move the window's cursor up by one row */
-void queue_window_curs_up(struct queue_window *window)
-{
-    struct node *current = window->selected;
-
-    if (!current && window->track_list->length == 0)
-        return;
-
-    /* If nothing is selected but there are list items, select the head */
-    if (!current && window->track_list->length > 0) {
-        window->selected = window->track_list->head;
-        current = window->selected;
-    }
-
-    if (current->prev) {
+    else if (direction == CURS_MOVE_UP && current->prev) {
         current->is_selected = false;
         current->prev->is_selected = true;
         window->selected = current->prev;

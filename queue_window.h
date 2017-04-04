@@ -29,6 +29,9 @@
 #include <stdbool.h>
 #include <ncurses.h>
 
+#define CURS_MOVE_UP 1
+#define CURS_MOVE_DOWN 2
+
 struct queue_window {
     WINDOW *win;
     struct node *selected;
@@ -40,9 +43,8 @@ void queue_window_free(struct queue_window *window);
 void queue_window_add_row(struct queue_window *window, char *track_label, char *duration_label);
 void queue_window_draw_row(struct node *node, WINDOW *win, int begin_y, int begin_x);
 void queue_window_draw_all(struct queue_window *window);
-
-void queue_window_curs_down(struct queue_window *window);
-void queue_window_curs_up(struct queue_window *window);
+1
+void queue_window_move_curs(struct queue_window *window, int direction);
 
 
 #endif //NCMPCLONE_WINDOW_QUEUE_H

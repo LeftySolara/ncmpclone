@@ -78,10 +78,11 @@ int main() {
     while ((ch = getch()) != 'q') {
         switch(ch) {
             case KEY_DOWN:
-                queue_window_curs_down(queue_window);
+                queue_window_move_curs(queue_window, CURS_MOVE_DOWN);
                 break;
             case KEY_UP:
-                queue_window_curs_up(queue_window);
+                queue_window_move_curs(queue_window, CURS_MOVE_UP);
+                break;
             default:
                 ;
         }
