@@ -1,5 +1,5 @@
 /******************************************************************************
- * window_queue.c : main window for the queue screen
+ * queue_window.c : main window for the queue screen
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
