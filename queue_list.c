@@ -30,6 +30,7 @@ struct node *node_init(char *track_label, char *duration_label)
     struct node *node = malloc(sizeof(*node));
     node->track_label = strdup(track_label);
     node->duration_label = strdup(duration_label);
+    node->is_selected = false;
     node->prev = NULL;
     node->next = NULL;
 
@@ -64,12 +65,14 @@ void list_free(struct list *list)
 }
 
 /* Append a node with data to the end of the list */
-void list_append(struct list *list, char *track_label, char *duration_label)
+struct node *list_append(struct list *list, char *track_label, char *duration_label)
 {
     struct node *node = node_init(track_label, duration_label);
 
-    if (!list->head)
+    if (!list->head) {
+        node->is_selected = true;
         list->head = node;
+    }
     else {
         struct node *current = list->head;
         while (current->next)
@@ -78,6 +81,8 @@ void list_append(struct list *list, char *track_label, char *duration_label)
         node->prev = current;
     }
     ++list->length;
+
+    return node;
 }
 
 /* Remove a node from position pos */
@@ -90,6 +95,7 @@ void list_erase(struct list *list, size_t pos)
     if (pos == 0) {
         list->head = current->next;
         list->head->prev = NULL;
+        list->head->is_selected = true;
         node_free(current);
     }
     else {
@@ -99,6 +105,13 @@ void list_erase(struct list *list, size_t pos)
         current->prev->next = current->next;
         if (current->next)
             current->next->prev = current->prev;
+
+        /* If there's another node after the one being deleted, select it */
+        if (current->is_selected && current->next)
+            current->next->is_selected = true;
+        else if (current->is_selected && current->prev) /* node is last in list */
+            current->prev->is_selected = true;
+
         node_free(current);
     }
     --list->length;

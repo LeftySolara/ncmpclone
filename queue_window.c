@@ -47,16 +47,25 @@ void queue_window_free(struct queue_window *window)
 void queue_window_add_row(struct queue_window *window, char *track_label,
                           char *duration_label)
 {
-    list_append(window->track_list, track_label, duration_label);
+    struct node *node = list_append(window->track_list, track_label, duration_label);
+    if (window->track_list->length == 1)
+        window->selected = window->track_list->head;
 }
 
 /* Draw a row on the window using data from a list node */
 void queue_window_draw_row(struct node *node, WINDOW *win, int begin_y, int begin_x)
 {
     int song_label_maxlen = COLS - strlen(node->duration_label) - 1;
+
+    wmove(win, begin_y, begin_x);
+    wclrtoeol(win);
+
     mvwaddnstr(win, begin_y, begin_x, node->track_label, song_label_maxlen);
     mvwaddstr(win, begin_y, COLS - strlen(node->duration_label), node->duration_label);
-    wrefresh(win);
+
+    if (node->is_selected) {
+        mvwchgat(win, begin_y, begin_x, -1, A_STANDOUT, 0, NULL);
+    }
 }
 
 /* Draw all nodes in a queue window's list */
@@ -69,4 +78,52 @@ void queue_window_draw_all(struct queue_window *window)
         queue_window_draw_row(current, window->win, i++, 0);
         current = current->next;
     }
+}
+
+/* Move the window's cursor down by one row */
+void queue_window_curs_down(struct queue_window *window)
+{
+    struct node *current = window->selected;
+
+    if (!current && window->track_list->length == 0)
+        return;
+
+    /* If nothing is selected but there are list items, select the head */
+    if (!current && window->track_list->length > 0) {
+        window->selected = window->track_list->head;
+        current = window->selected;
+    }
+
+    if (current->next) {
+        current->is_selected = false;
+        current->next->is_selected = true;
+        window->selected = current->next;
+    }
+
+    queue_window_draw_all(window);
+    wrefresh(window->win);
+}
+
+/* Move the window's cursor up by one row */
+void queue_window_curs_up(struct queue_window *window)
+{
+    struct node *current = window->selected;
+
+    if (!current && window->track_list->length == 0)
+        return;
+
+    /* If nothing is selected but there are list items, select the head */
+    if (!current && window->track_list->length > 0) {
+        window->selected = window->track_list->head;
+        current = window->selected;
+    }
+
+    if (current->prev) {
+        current->is_selected = false;
+        current->prev->is_selected = true;
+        window->selected = current->prev;
+    }
+
+    queue_window_draw_all(window);
+    wrefresh(window->win);
 }

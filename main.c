@@ -71,11 +71,20 @@ int main() {
 
     title_bar_draw(title_bar);
     queue_window_draw_all(queue_window);
+    wrefresh(queue_window->win);
 
 
     int ch;
     while ((ch = getch()) != 'q') {
-        ;
+        switch(ch) {
+            case KEY_DOWN:
+                queue_window_curs_down(queue_window);
+                break;
+            case KEY_UP:
+                queue_window_curs_up(queue_window);
+            default:
+                ;
+        }
     }
 
     title_bar_free(title_bar);

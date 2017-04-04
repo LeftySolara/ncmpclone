@@ -25,10 +25,12 @@
 #define NCMPCLONE_QUEUE_LIST_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct node {
     char *track_label;
     char *duration_label;
+    bool is_selected;
     struct node *next;
     struct node *prev;
 };
@@ -45,7 +47,7 @@ struct list {
 
 struct list *list_init();
 void list_free(struct list *list);
-void list_append(struct list *list, char *track_label, char *duration_label);
+struct node *list_append(struct list *list, char *track_label, char *duration_label);
 void list_erase(struct list *list, size_t pos);
 void list_clear(struct list *list);
 
