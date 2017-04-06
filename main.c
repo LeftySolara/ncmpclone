@@ -48,8 +48,6 @@ int main() {
         exit(1);
     }
 
-    struct playlist *plist = playlist_get_queue(mpd_conn);
-
     /* Initialize ncurses */
     setlocale(LC_ALL, "");
     initscr();
@@ -63,36 +61,27 @@ int main() {
     struct title_bar *title_bar = title_bar_init("Queue", mpd_conn);
     struct queue_window *queue_window = queue_window_init();
 
-    queue_window_add_row(queue_window, "song1", "duration1");
-    queue_window_add_row(queue_window, "song2", "duration2");
-    queue_window_add_row(queue_window, "song3", "duration3");
-    queue_window_add_row(queue_window, "song4", "duration4");
-    queue_window_add_row(queue_window, "song5", "duration5");
-
     title_bar_draw(title_bar);
-    queue_window_draw_all(queue_window);
-    wrefresh(queue_window->win);
 
+    queue_window_populate(queue_window, mpd_conn);
+    queue_window_draw_all(queue_window);
 
     int ch;
     while ((ch = getch()) != 'q') {
-        switch(ch) {
+        switch (ch) {
             case KEY_DOWN:
-                queue_window_move_curs(queue_window, CURS_MOVE_DOWN);
+                queue_window_move_cursor(queue_window, CURSOR_MOVE_DOWN);
                 break;
             case KEY_UP:
-                queue_window_move_curs(queue_window, CURS_MOVE_UP);
+                queue_window_move_cursor(queue_window, CURSOR_MOVE_UP);
                 break;
-            default:
-                ;
         }
     }
 
     title_bar_free(title_bar);
     queue_window_free(queue_window);
     endwin();
-
-    playlist_free(plist);
+    
     mpd_connection_free(mpd_conn);
 
     return 0;

@@ -24,27 +24,43 @@
 #ifndef NCMPCLONE_WINDOW_QUEUE_H
 #define NCMPCLONE_WINDOW_QUEUE_H
 
-#include "queue_list.h"
-
 #include <stdbool.h>
 #include <ncurses.h>
+#include <mpd/client.h>
 
-#define CURS_MOVE_UP 1
-#define CURS_MOVE_DOWN 2
+#define CURSOR_MOVE_DOWN 1
+#define CURSOR_MOVE_UP 2
+
+struct queue_row {
+    struct mpd_song *song;
+    char *song_label;
+    char *duration_label;
+    bool is_selected;
+
+    struct queue_row *next;
+    struct queue_row *prev;
+};
 
 struct queue_window {
     WINDOW *win;
-    struct node *selected;
-    struct list *track_list;
+    struct queue_row *head;
+    struct queue_row *selected;
 };
+
+struct queue_row *queue_row_init(struct mpd_song *song);
+void queue_row_free(struct queue_row *row);
 
 struct queue_window *queue_window_init();
 void queue_window_free(struct queue_window *window);
-void queue_window_add_row(struct queue_window *window, char *track_label, char *duration_label);
-void queue_window_draw_row(struct node *node, WINDOW *win, int begin_y, int begin_x);
-void queue_window_draw_all(struct queue_window *window);
 
-void queue_window_move_curs(struct queue_window *window, int direction);
+void queue_window_populate(struct queue_window *window, struct mpd_connection *conn);
+struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_song *song);
+void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x);
+void queue_window_draw_all(struct queue_window *window);
+void queue_window_move_cursor(struct queue_window *window, int direction);
+
+char *create_track_label(struct mpd_song *song);
+char *create_duration_label(struct mpd_song *song);
 
 
 #endif //NCMPCLONE_WINDOW_QUEUE_H
