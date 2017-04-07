@@ -57,6 +57,7 @@ void title_bar_update_volume(struct title_bar *title_bar, struct mpd_connection 
 /* Print the title bar onto the screen */
 void title_bar_draw(struct title_bar *title_bar)
 {
+    wclear(title_bar->win);
     wattr_on(title_bar->win, A_BOLD, NULL);
     mvwaddnstr(title_bar->win, 0, 0, title_bar->title, title_bar->width);
     wattr_off(title_bar->win, A_BOLD, NULL);
