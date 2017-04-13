@@ -66,6 +66,9 @@ int main() {
     queue_window_populate(queue_window, mpd_conn);
     queue_window_draw_all(queue_window);
 
+    wrefresh(queue_window->win);
+    wrefresh(title_bar->win);
+
     int ch;
     while ((ch = getch()) != 'q') {
         title_bar_update_volume(title_bar, mpd_conn);
@@ -73,15 +76,19 @@ int main() {
         switch (ch) {
             case KEY_DOWN:
                 queue_window_move_cursor(queue_window, CURSOR_MOVE_DOWN);
+                wrefresh(queue_window->win);
                 break;
             case KEY_UP:
                 queue_window_move_cursor(queue_window, CURSOR_MOVE_UP);
+                wrefresh(queue_window->win);
                 break;
             case KEY_LEFT:
                 mpd_run_change_volume(mpd_conn, -1);
+                wrefresh(title_bar->win);
                 break;
             case KEY_RIGHT:
                 mpd_run_change_volume(mpd_conn, 1);
+                wrefresh(title_bar->win);
                 break;
         }
     }

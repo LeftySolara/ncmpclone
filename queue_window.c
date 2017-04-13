@@ -144,7 +144,6 @@ void queue_window_draw_all(struct queue_window *window)
         queue_window_draw_row(window, current, i++, 0);
         current = current->next;
     }
-    wrefresh(window->win);
 }
 
 void queue_window_move_cursor(struct queue_window *window, int direction)
@@ -172,7 +171,6 @@ void queue_window_move_cursor(struct queue_window *window, int direction)
     }
 
     queue_window_draw_all(window);
-    wrefresh(window->win);
 }
 
 /* Create a song label of the format "artist - title" */

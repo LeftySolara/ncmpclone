@@ -68,6 +68,4 @@ void title_bar_draw(struct title_bar *title_bar)
     wmove(title_bar->win, 1, 0);
     for (int i = 0; i < title_bar->width; ++i)
         waddch(title_bar->win, ACS_HLINE);
-
-    wrefresh(title_bar->win);
 }
