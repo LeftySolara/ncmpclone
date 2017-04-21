@@ -34,6 +34,7 @@
 #define MPD_DEFAULT_HOST "localhost"
 #define MPD_DEFAULT_PORT 6600
 #define MPD_DEFAULT_TIMEOUT 5000
+#define KEY_RETURN 10 /* the KEY_ENTER in ncurses doesn't seem to be working */
 
 int main() {
 
@@ -89,6 +90,15 @@ int main() {
             case KEY_RIGHT:
                 mpd_run_change_volume(mpd_conn, 1);
                 wrefresh(title_bar->win);
+                break;
+            case KEY_RETURN:
+                mpd_run_play_id(mpd_conn, mpd_song_get_id(queue_window->selected->song));
+                break;
+            case 'p':
+                mpd_run_toggle_pause(mpd_conn);
+                break;
+            case 's':
+                mpd_run_stop(mpd_conn);
                 break;
         }
     }
