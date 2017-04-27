@@ -64,6 +64,9 @@ struct queue_window *queue_window_init()
     window->win = newwin(LINES - 4, COLS, 2, 0);
     window->head = NULL;
     window->selected = NULL;
+    window->top_visible = window->head;
+    window->bottom_visible = window->head;
+    window->max_visible = LINES - 4;
 
     return window;
 }
@@ -79,6 +82,8 @@ void queue_window_free(struct queue_window *window)
 
     if (window->selected != NULL)
         window->selected = NULL;
+    if (window->top_visible != NULL)
+        window->top_visible = NULL;
 
     delwin(window->win);
     free(window);
@@ -95,6 +100,13 @@ void queue_window_populate(struct queue_window *window, struct mpd_connection *c
         row = queue_row_init(song);
         queue_window_add_song(window, row->song);
     }
+
+    int i = 1;
+    window->bottom_visible = window->head;
+    while (window->bottom_visible->next && i < window->max_visible) {
+        window->bottom_visible = window->bottom_visible->next;
+        ++i;
+    }
 }
 
 /* Add a song to the current MPD queue */
@@ -106,6 +118,7 @@ struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_
         window->head = row;
         window->selected = window->head;
         window->selected->is_selected = true;
+        window->top_visible = row;
     }
     else {
         struct queue_row *current = window->head;
@@ -121,7 +134,7 @@ struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_
 /* Draw a row on the queue window */
 void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x)
 {
-    if (begin_y >= LINES - 4)
+    if (begin_y >= window->max_visible)
         return;
 
     int song_label_maxlen = COLS - strlen(row->song_label) - 1;
@@ -140,7 +153,7 @@ void queue_window_draw_row(struct queue_window *window, struct queue_row *row, i
 /* Draw all nodes in a queue window's list */
 void queue_window_draw_all(struct queue_window *window)
 {
-    struct queue_row *current = window->head;
+    struct queue_row *current = window->top_visible;
 
     int i = 0;
     while (current) {
@@ -163,11 +176,21 @@ void queue_window_move_cursor(struct queue_window *window, int direction)
     }
 
     if (direction == CURSOR_MOVE_DOWN && current->next) {
+        /* If the last line is selected, scroll down */
+        if (window->bottom_visible == current) {
+            window->top_visible = window->top_visible->next;
+            window->bottom_visible = window->bottom_visible->next;
+        }
         current->is_selected = false;
         current->next->is_selected = true;
         window->selected = current->next;
     }
     else if (direction == CURSOR_MOVE_UP && current->prev) {
+        /* If the first line is selected, scroll up */
+        if (window->top_visible == current) {
+            window->top_visible = window->top_visible->prev;
+            window->bottom_visible = window->bottom_visible->prev;
+        }
         current->is_selected = false;
         current->prev->is_selected = true;
         window->selected = current->prev;

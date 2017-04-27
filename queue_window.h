@@ -45,6 +45,9 @@ struct queue_window {
     WINDOW *win;
     struct queue_row *head;
     struct queue_row *selected;
+    struct queue_row *top_visible;
+    struct queue_row *bottom_visible;
+    int max_visible;
 };
 
 struct queue_row *queue_row_init(struct mpd_song *song);
