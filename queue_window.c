@@ -175,7 +175,7 @@ void queue_window_move_cursor(struct queue_window *window, int direction)
         current = window->selected;
     }
 
-    if (direction == CURSOR_MOVE_DOWN && current->next) {
+    if (direction == DOWN && current->next) {
         /* If the last line is selected, scroll down */
         if (window->bottom_visible == current) {
             window->top_visible = window->top_visible->next;
@@ -185,7 +185,7 @@ void queue_window_move_cursor(struct queue_window *window, int direction)
         current->next->is_selected = true;
         window->selected = current->next;
     }
-    else if (direction == CURSOR_MOVE_UP && current->prev) {
+    else if (direction == UP && current->prev) {
         /* If the first line is selected, scroll up */
         if (window->top_visible == current) {
             window->top_visible = window->top_visible->prev;
@@ -195,6 +195,18 @@ void queue_window_move_cursor(struct queue_window *window, int direction)
         current->prev->is_selected = true;
         window->selected = current->prev;
     }
+
+    queue_window_draw_all(window);
+}
+
+/* Scroll the window one page in the specified direction */
+void queue_window_scroll_page(struct queue_window *window, int direction)
+{
+    if (window->selected == NULL)
+        return;
+
+    for (int i = 0; i < window->max_visible - 1; ++i)
+        queue_window_move_cursor(window, direction);
 
     queue_window_draw_all(window);
 }

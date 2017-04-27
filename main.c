@@ -76,11 +76,11 @@ int main() {
         title_bar_draw(title_bar);
         switch (ch) {
             case KEY_DOWN:
-                queue_window_move_cursor(queue_window, CURSOR_MOVE_DOWN);
+                queue_window_move_cursor(queue_window, DOWN);
                 wrefresh(queue_window->win);
                 break;
             case KEY_UP:
-                queue_window_move_cursor(queue_window, CURSOR_MOVE_UP);
+                queue_window_move_cursor(queue_window, UP);
                 wrefresh(queue_window->win);
                 break;
             case KEY_LEFT:
@@ -90,6 +90,14 @@ int main() {
             case KEY_RIGHT:
                 mpd_run_change_volume(mpd_conn, 1);
                 wrefresh(title_bar->win);
+                break;
+            case KEY_NPAGE:
+                queue_window_scroll_page(queue_window, DOWN);
+                wrefresh(queue_window->win);
+                break;
+            case KEY_PPAGE:
+                queue_window_scroll_page(queue_window, UP);
+                wrefresh(queue_window->win);
                 break;
             case KEY_RETURN:
                 mpd_run_play_id(mpd_conn, mpd_song_get_id(queue_window->selected->song));

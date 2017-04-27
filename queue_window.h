@@ -28,8 +28,8 @@
 #include <ncurses.h>
 #include <mpd/client.h>
 
-#define CURSOR_MOVE_DOWN 1
-#define CURSOR_MOVE_UP 2
+#define DOWN 1
+#define UP 2
 
 struct queue_row {
     struct mpd_song *song;
@@ -61,6 +61,7 @@ struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_
 void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x);
 void queue_window_draw_all(struct queue_window *window);
 void queue_window_move_cursor(struct queue_window *window, int direction);
+void queue_window_scroll_page(struct queue_window *window, int direction);
 
 char *create_track_label(struct mpd_song *song);
 char *create_duration_label(struct mpd_song *song);
