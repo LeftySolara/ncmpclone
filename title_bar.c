@@ -29,11 +29,10 @@
 struct title_bar *title_bar_init(char *title, struct mpd_connection *conn)
 {
     struct title_bar *title_bar = malloc(sizeof(struct title_bar));
-    int width = getmaxx(stdscr);
 
-    title_bar->win = newwin(2, width, 0, 0);
+    title_bar->win = newwin(2, COLS, 0, 0);
     title_bar->title = title;
-    title_bar->width = width;
+    title_bar->width = COLS;
     title_bar_update_volume(title_bar, conn);
 
     return title_bar;
