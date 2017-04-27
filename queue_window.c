@@ -121,6 +121,9 @@ struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_
 /* Draw a row on the queue window */
 void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x)
 {
+    if (begin_y >= LINES - 4)
+        return;
+
     int song_label_maxlen = COLS - strlen(row->song_label) - 1;
 
     wmove(window->win, begin_y, begin_x);
