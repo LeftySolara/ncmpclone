@@ -137,7 +137,7 @@ void queue_window_draw_row(struct queue_window *window, struct queue_row *row, i
     if (begin_y >= window->max_visible)
         return;
 
-    int song_label_maxlen = COLS - strlen(row->song_label) - 1;
+    int song_label_maxlen = COLS - strlen(row->duration_label) - 1;
 
     wmove(window->win, begin_y, begin_x);
     wclrtoeol(window->win);
