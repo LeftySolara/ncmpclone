@@ -71,9 +71,9 @@ int main() {
 
     status_bar_draw(status_bar);
 
-    wrefresh(queue_window->win);
-    wrefresh(title_bar->win);
-    wrefresh(status_bar->win);
+    wnoutrefresh(queue_window->win);
+    wnoutrefresh(title_bar->win);
+    wnoutrefresh(status_bar->win);
 
     int ch;
     while ((ch = getch()) != 'q') {
@@ -87,27 +87,27 @@ int main() {
         switch (ch) {
             case KEY_DOWN:
                 queue_window_move_cursor(queue_window, DOWN);
-                wrefresh(queue_window->win);
+                wnoutrefresh(queue_window->win);
                 break;
             case KEY_UP:
                 queue_window_move_cursor(queue_window, UP);
-                wrefresh(queue_window->win);
+                wnoutrefresh(queue_window->win);
                 break;
             case KEY_LEFT:
                 mpd_run_change_volume(mpd_conn, -1);
-                wrefresh(title_bar->win);
+                wnoutrefresh(title_bar->win);
                 break;
             case KEY_RIGHT:
                 mpd_run_change_volume(mpd_conn, 1);
-                wrefresh(title_bar->win);
+                wnoutrefresh(title_bar->win);
                 break;
             case KEY_NPAGE:
                 queue_window_scroll_page(queue_window, DOWN);
-                wrefresh(queue_window->win);
+                wnoutrefresh(queue_window->win);
                 break;
             case KEY_PPAGE:
                 queue_window_scroll_page(queue_window, UP);
-                wrefresh(queue_window->win);
+                wnoutrefresh(queue_window->win);
                 break;
             case KEY_RETURN:
                 mpd_run_play_id(mpd_conn, mpd_song_get_id(queue_window->selected->song));
@@ -119,7 +119,8 @@ int main() {
                 mpd_run_stop(mpd_conn);
                 break;
         }
-        wrefresh(status_bar->win);
+        wnoutrefresh(status_bar->win);
+        doupdate();
     }
 
     title_bar_free(title_bar);
