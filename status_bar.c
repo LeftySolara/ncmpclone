@@ -59,7 +59,7 @@ void status_bar_draw(struct status_bar *bar)
     if (state == MPD_STATE_PLAY)
         state_label = "Playing:";
     else if (state == MPD_STATE_PAUSE)
-        state_label = "Paused:";
+        state_label = "[Paused]";
     else
         state_label = " ";
 
