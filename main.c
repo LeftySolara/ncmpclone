@@ -24,6 +24,7 @@
 #include "playlist.h"
 #include "queue_window.h"
 #include "title_bar.h"
+#include "status_bar.h"
 
 #include <menu.h>
 #include <mpd/client.h>
@@ -61,19 +62,28 @@ int main() {
 
     struct title_bar *title_bar = title_bar_init("Queue", mpd_conn);
     struct queue_window *queue_window = queue_window_init();
+    struct status_bar *status_bar = status_bar_init(mpd_conn);
 
     title_bar_draw(title_bar);
 
     queue_window_populate(queue_window, mpd_conn);
     queue_window_draw_all(queue_window);
 
+    status_bar_draw(status_bar);
+
     wrefresh(queue_window->win);
     wrefresh(title_bar->win);
+    wrefresh(status_bar->win);
 
     int ch;
     while ((ch = getch()) != 'q') {
+
         title_bar_update_volume(title_bar, mpd_conn);
         title_bar_draw(title_bar);
+
+        status_bar_update(status_bar);
+        status_bar_draw(status_bar);
+
         switch (ch) {
             case KEY_DOWN:
                 queue_window_move_cursor(queue_window, DOWN);
@@ -109,10 +119,12 @@ int main() {
                 mpd_run_stop(mpd_conn);
                 break;
         }
+        wrefresh(status_bar->win);
     }
 
     title_bar_free(title_bar);
     queue_window_free(queue_window);
+    status_bar_free(status_bar);
     endwin();
 
     mpd_connection_free(mpd_conn);

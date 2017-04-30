@@ -13,7 +13,8 @@ set(SOURCE_FILES
         title_bar.c
         playlist.c
         queue_window.c
-        queue_list.c)
+        queue_list.c
+        status_bar.c)
 add_executable(ncmpclone ${SOURCE_FILES})
 target_link_libraries(ncmpclone -lmenu ${CURSES_LIBRARIES})
 target_link_libraries(ncmpclone mpdclient)
