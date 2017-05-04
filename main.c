@@ -37,16 +37,26 @@
 #define MPD_DEFAULT_TIMEOUT 5000
 #define KEY_RETURN 10 /* the KEY_ENTER in ncurses doesn't seem to be working */
 
+
+struct mpd_connection_info {
+    struct mpd_connection *connection;
+    struct mpd_status *status;
+    char *host;
+    int port;
+    int timeout;
+} mpd_info;
+
+
 int main() {
 
     /* Establish a connection with the local MPD server */
-    struct mpd_connection *mpd_conn = mpd_connection_new(MPD_DEFAULT_HOST,
+    mpd_info.connection = mpd_connection_new(MPD_DEFAULT_HOST,
                                                          MPD_DEFAULT_PORT,
                                                          MPD_DEFAULT_TIMEOUT);
 
-    if (mpd_connection_get_error(mpd_conn) != MPD_ERROR_SUCCESS) {
+    if (mpd_connection_get_error(mpd_info.connection) != MPD_ERROR_SUCCESS) {
         printf("Error connecting to MPD server\n");
-        mpd_connection_free(mpd_conn);
+        mpd_connection_free(mpd_info.connection);
         exit(1);
     }
 
@@ -60,13 +70,13 @@ int main() {
     keypad(stdscr, TRUE);
     refresh();
 
-    struct title_bar *title_bar = title_bar_init("Queue", mpd_conn);
+    struct title_bar *title_bar = title_bar_init("Queue", mpd_info.connection);
     struct queue_window *queue_window = queue_window_init();
-    struct status_bar *status_bar = status_bar_init(mpd_conn);
+    struct status_bar *status_bar = status_bar_init(mpd_info.connection);
 
     title_bar_draw(title_bar);
 
-    queue_window_populate(queue_window, mpd_conn);
+    queue_window_populate(queue_window, mpd_info.connection);
     queue_window_draw_all(queue_window);
 
     status_bar_draw(status_bar);
@@ -78,7 +88,7 @@ int main() {
     int ch;
     while ((ch = getch()) != 'q') {
 
-        title_bar_update_volume(title_bar, mpd_conn);
+        title_bar_update_volume(title_bar, mpd_info.connection);
         title_bar_draw(title_bar);
 
         status_bar_update(status_bar);
@@ -94,11 +104,11 @@ int main() {
                 wnoutrefresh(queue_window->win);
                 break;
             case KEY_LEFT:
-                mpd_run_change_volume(mpd_conn, -1);
+                mpd_run_change_volume(mpd_info.connection, -1);
                 wnoutrefresh(title_bar->win);
                 break;
             case KEY_RIGHT:
-                mpd_run_change_volume(mpd_conn, 1);
+                mpd_run_change_volume(mpd_info.connection, 1);
                 wnoutrefresh(title_bar->win);
                 break;
             case KEY_NPAGE:
@@ -110,16 +120,16 @@ int main() {
                 wnoutrefresh(queue_window->win);
                 break;
             case KEY_RETURN:
-                mpd_run_play_id(mpd_conn, mpd_song_get_id(queue_window->selected->song));
+                mpd_run_play_id(mpd_info.connection, mpd_song_get_id(queue_window->selected->song));
                 break;
             case 'p':
-                mpd_run_toggle_pause(mpd_conn);
+                mpd_run_toggle_pause(mpd_info.connection);
                 break;
             case 's':
-                mpd_run_stop(mpd_conn);
+                mpd_run_stop(mpd_info.connection);
                 break;
         }
-        wnoutrefresh(status_bar->win);
+//        wnoutrefresh(status_bar->win);
         doupdate();
     }
 
@@ -128,7 +138,7 @@ int main() {
     status_bar_free(status_bar);
     endwin();
 
-    mpd_connection_free(mpd_conn);
+    mpd_connection_free(mpd_info.connection);
 
     return 0;
 }
