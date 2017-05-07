@@ -37,6 +37,7 @@
 // TODO: Check for MPD_HOST and MPD_PORT environment variables before connecting
 
 // TODO: Currently playing song is displaying in bold (correctly), but doesn't update without user input
+// TODO: Fix status bar flickering
 
 struct mpd_connection_info *mpd_info;
 
@@ -90,8 +91,8 @@ int main(int argc, char *argv[]) {
         title_bar_update_volume(title_bar);
         title_bar_draw(title_bar);
 
-        status_bar_update(status_bar);
         status_bar_draw(status_bar);
+        wnoutrefresh(status_bar->win);
 
         switch (ch) {
             case KEY_DOWN:
@@ -128,7 +129,6 @@ int main(int argc, char *argv[]) {
                 mpd_run_stop(mpd_info->connection);
                 break;
         }
-//        wnoutrefresh(status_bar->win);
         doupdate();
     }
 

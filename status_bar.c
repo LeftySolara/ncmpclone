@@ -22,15 +22,14 @@
  ***************************************************************************/
 
 #include "status_bar.h"
+#include "mpd_info.h"
 #include <stdlib.h>
 #include <string.h>
 
-struct status_bar *status_bar_init(struct mpd_connection *mpd_conn)
+struct status_bar *status_bar_init()
 {
     struct status_bar *status_bar = malloc(sizeof(struct status_bar));
     status_bar->win =newwin(2, COLS, LINES - 2, 0);
-    status_bar->mpd_conn = mpd_conn;
-    status_bar->mpd_status = mpd_run_status(mpd_conn);
 
     return status_bar;
 }
@@ -38,22 +37,20 @@ struct status_bar *status_bar_init(struct mpd_connection *mpd_conn)
 void status_bar_free(struct status_bar *bar)
 {
     delwin(bar->win);
-    mpd_status_free(bar->mpd_status);
 }
 
 void status_bar_draw(struct status_bar *bar)
 {
-    struct mpd_song *current_song = mpd_run_current_song(bar->mpd_conn);
-    char *track_label = create_song_label(current_song);
+    char *track_label = create_song_label(mpd_info->current_song);
 
     wclear(bar->win);
     for (int i = 0; i < COLS; ++i)
         waddch(bar->win, ACS_HLINE);
 
-    if (current_song == NULL)
+    if (mpd_info->current_song == NULL)
         return;
 
-    int state = mpd_status_get_state(bar->mpd_status);
+    int state = mpd_status_get_state(mpd_info->status);
     char *state_label;
 
     if (state == MPD_STATE_PLAY)
@@ -71,11 +68,6 @@ void status_bar_draw(struct status_bar *bar)
     }
 
     free(track_label);
-}
-
-void status_bar_update(struct status_bar *bar)
-{
-    bar->mpd_status = mpd_run_status(bar->mpd_conn);
 }
 
 // TODO: Move this function to a shared header (currently a copy-paste job)

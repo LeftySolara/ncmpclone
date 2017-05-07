@@ -29,14 +29,11 @@
 
 struct status_bar {
     WINDOW *win;
-    struct mpd_connection *mpd_conn;
-    struct mpd_status *mpd_status;
 };
 
-struct status_bar *status_bar_init(struct mpd_connection *mpd_conn);
+struct status_bar *status_bar_init();
 void status_bar_free(struct status_bar *bar);
 void status_bar_draw(struct status_bar *bar);
-void status_bar_update(struct status_bar *bar);
 char *create_song_label(struct mpd_song *song);
 
 #endif //NCMPCLONE_STATUS_BAR_H
