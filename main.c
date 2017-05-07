@@ -22,7 +22,6 @@
  ***************************************************************************/
 
 #include "mpd_info.h"
-#include "playlist.h"
 #include "queue_window.h"
 #include "title_bar.h"
 #include "status_bar.h"
@@ -36,6 +35,8 @@
 
 // TODO: Add optional command-line arguments for MPD host and port
 // TODO: Check for MPD_HOST and MPD_PORT environment variables before connecting
+
+// TODO: Currently playing song is displaying in bold (correctly), but doesn't update without user input
 
 struct mpd_connection_info *mpd_info;
 

@@ -11,7 +11,6 @@ include_directories(${CURSES_INCLUDE_DIR})
 set(SOURCE_FILES
         main.c
         title_bar.c
-        playlist.c
         queue_window.c
         status_bar.c
         mpd_info.c)
