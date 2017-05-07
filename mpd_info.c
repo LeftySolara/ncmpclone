@@ -47,6 +47,13 @@ void mpd_connection_info_free(struct mpd_connection_info *mpd_info)
     mpd_info->status = NULL;
 }
 
+/* Query the MPD server for current information */
+void mpd_connection_info_update(struct mpd_connection_info *mpd_info)
+{
+    mpd_info->status = mpd_run_status(mpd_info->connection);
+    mpd_info->current_song = mpd_run_current_song(mpd_info->connection);
+}
+
 enum mpd_error mpd_make_connection(struct mpd_connection_info *mpd_info)
 {
     mpd_info->connection = mpd_connection_new(mpd_info->host, mpd_info->port, mpd_info->timeout);

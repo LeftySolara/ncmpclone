@@ -145,12 +145,15 @@ void queue_window_draw_row(struct queue_window *window, struct queue_row *row, i
     wmove(window->win, begin_y, begin_x);
     wclrtoeol(window->win);
 
+    if (mpd_song_get_id(mpd_info->current_song) == mpd_song_get_id(row->song))
+        wattr_on(window->win, A_BOLD, NULL);
+
     mvwaddnstr(window->win, begin_y, begin_x, row->song_label, song_label_maxlen);
     mvwaddstr(window->win, begin_y, COLS - strlen(row->duration_label), row->duration_label);
 
-    if (row->is_selected) {
+    if (row->is_selected)
         mvwchgat(window->win, begin_y, begin_x, -1, A_STANDOUT, 0, NULL);
-    }
+    wattr_off(window->win, A_BOLD, NULL);
 }
 
 /* Draw all nodes in a queue window's list */
@@ -159,7 +162,7 @@ void queue_window_draw_all(struct queue_window *window)
     struct queue_row *current = window->top_visible;
 
     int i = 0;
-    while (current) {
+    while (current != window->bottom_visible->next) {
         queue_window_draw_row(window, current, i++, 0);
         current = current->next;
     }

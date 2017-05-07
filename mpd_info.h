@@ -29,6 +29,7 @@
 struct mpd_connection_info {
     struct mpd_connection *connection;
     struct mpd_status *status;
+    struct mpd_song *current_song;
     char *host;
     unsigned int port;
     unsigned int timeout;
@@ -38,6 +39,7 @@ extern struct mpd_connection_info *mpd_info;
 
 struct mpd_connection_info *mpd_connection_info_init();
 void mpd_connection_info_free(struct mpd_connection_info *mpd_info);
+void mpd_connection_info_update(struct mpd_connection_info *mpd_info);
 enum mpd_error mpd_make_connection(struct mpd_connection_info *mpd_info);
 
 #endif //NCMPCLONE_MPD_INFO_H

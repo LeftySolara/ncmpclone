@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     struct queue_window *queue_window = queue_window_init();
     struct status_bar *status_bar = status_bar_init(mpd_info->connection);
 
-    mpd_info->status = mpd_run_status(mpd_info->connection);
+    mpd_connection_info_update(mpd_info);
 
     title_bar_update_volume(title_bar);
     title_bar_draw(title_bar);
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     int ch;
     while ((ch = getch()) != 'q') {
 
-        mpd_info->status = mpd_run_status(mpd_info->connection);
+        mpd_connection_info_update(mpd_info);
 
         title_bar_update_volume(title_bar);
         title_bar_draw(title_bar);
