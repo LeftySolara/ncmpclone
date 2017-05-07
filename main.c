@@ -48,24 +48,7 @@ int main(int argc, char *argv[]) {
 
     enum mpd_error err = mpd_make_connection(mpd_info);
     if (err != MPD_ERROR_SUCCESS) {
-        printf("Error %d: ", err);
-        switch (err) {
-            case MPD_ERROR_OOM:
-                printf("Out of memory\n");
-                break;
-            case MPD_ERROR_TIMEOUT:
-                printf("Connection timed out\n");
-                break;
-            case MPD_ERROR_RESOLVER:
-                printf("Could not resolve host\n");
-                break;
-            case MPD_ERROR_MALFORMED:
-                printf("Response from server is malformed\n");
-                break;
-            case MPD_ERROR_CLOSED:
-                printf("Connection closed by server\n");
-                break;
-        }
+        printf("%s\n", mpd_connection_get_error_message(mpd_info->connection));
         mpd_connection_info_free(mpd_info);
         exit(err);
     }
