@@ -90,13 +90,16 @@ void queue_window_free(struct queue_window *window)
 }
 
 /* Populate the queue window with songs from the current MPD queue */
-void queue_window_populate(struct queue_window *window, struct mpd_connection *conn)
+void queue_window_populate(struct queue_window *window)
 {
+    if (mpd_info->connection == NULL)
+        return;
+
     struct mpd_song *song;
     struct queue_row *row;
-    mpd_send_list_queue_meta(conn);
+    mpd_send_list_queue_meta(mpd_info->connection);
 
-    while ((song = mpd_recv_song(conn)) != NULL) {
+    while ((song = mpd_recv_song(mpd_info->connection)) != NULL) {
         row = queue_row_init(song);
         queue_window_add_song(window, row->song);
     }

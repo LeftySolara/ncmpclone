@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
     title_bar_update_volume(title_bar);
     title_bar_draw(title_bar);
 
-    queue_window_populate(queue_window, mpd_info->connection);
+    queue_window_populate(queue_window);
     queue_window_draw_all(queue_window);
 
     status_bar_draw(status_bar);

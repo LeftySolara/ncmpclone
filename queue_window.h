@@ -24,9 +24,9 @@
 #ifndef NCMPCLONE_WINDOW_QUEUE_H
 #define NCMPCLONE_WINDOW_QUEUE_H
 
+#include "mpd_info.h"
 #include <stdbool.h>
 #include <ncurses.h>
-#include <mpd/client.h>
 
 #define DOWN 1
 #define UP 2
@@ -56,7 +56,7 @@ void queue_row_free(struct queue_row *row);
 struct queue_window *queue_window_init();
 void queue_window_free(struct queue_window *window);
 
-void queue_window_populate(struct queue_window *window, struct mpd_connection *conn);
+void queue_window_populate(struct queue_window *window);
 struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_song *song);
 void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x);
 void queue_window_draw_all(struct queue_window *window);
