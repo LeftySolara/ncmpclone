@@ -37,10 +37,11 @@
 // TODO: Add optional command-line arguments for MPD host and port
 // TODO: Check for MPD_HOST and MPD_PORT environment variables before connecting
 
+struct mpd_connection_info *mpd_info;
+
 int main(int argc, char *argv[]) {
 
-    struct mpd_connection_info *mpd_info = mpd_connection_info_init();
-
+    mpd_info = mpd_connection_info_init();
     mpd_info->host = argv[1];
     mpd_info->port = atoi(argv[2]);
     mpd_info->timeout = atoi(argv[3]);
@@ -79,10 +80,13 @@ int main(int argc, char *argv[]) {
     keypad(stdscr, TRUE);
     refresh();
 
-    struct title_bar *title_bar = title_bar_init("Queue", mpd_info->connection);
+    struct title_bar *title_bar = title_bar_init("Queue");
     struct queue_window *queue_window = queue_window_init();
     struct status_bar *status_bar = status_bar_init(mpd_info->connection);
 
+    mpd_info->status = mpd_run_status(mpd_info->connection);
+
+    title_bar_update_volume(title_bar);
     title_bar_draw(title_bar);
 
     queue_window_populate(queue_window, mpd_info->connection);
@@ -97,7 +101,9 @@ int main(int argc, char *argv[]) {
     int ch;
     while ((ch = getch()) != 'q') {
 
-        title_bar_update_volume(title_bar, mpd_info->connection);
+        mpd_info->status = mpd_run_status(mpd_info->connection);
+
+        title_bar_update_volume(title_bar);
         title_bar_draw(title_bar);
 
         status_bar_update(status_bar);

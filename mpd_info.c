@@ -45,7 +45,7 @@ void mpd_connection_info_free(struct mpd_connection_info *mpd_info)
 
     mpd_info->connection = NULL;
     mpd_info->status = NULL;
-};
+}
 
 enum mpd_error mpd_make_connection(struct mpd_connection_info *mpd_info)
 {

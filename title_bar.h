@@ -25,19 +25,17 @@
 #define NCMPCLONE_TITLE_BAR_H
 
 #include <ncurses.h>
-#include <mpd/client.h>
 
 struct title_bar {
     WINDOW *win;
-    struct mpd_status *status;
     char *title;
     int width;
     char volume_label[12];
 };
 
-struct title_bar *title_bar_init(char *title, struct mpd_connection *conn);
+struct title_bar *title_bar_init(char *title);
 void title_bar_free(struct title_bar *title_bar);
-void title_bar_update_volume(struct title_bar *title_bar, struct mpd_connection *conn);
+void title_bar_update_volume(struct title_bar *title_bar);
 void title_bar_draw(struct title_bar *title_bar);
 
 #endif //NCMPCLONE_TITLE_BAR_H

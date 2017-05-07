@@ -26,13 +26,15 @@
 
 #include <mpd/client.h>
 
-extern struct mpd_connection_info {
+struct mpd_connection_info {
     struct mpd_connection *connection;
     struct mpd_status *status;
     char *host;
     unsigned int port;
     unsigned int timeout;
-} mpd_info;
+};
+
+extern struct mpd_connection_info *mpd_info;
 
 struct mpd_connection_info *mpd_connection_info_init();
 void mpd_connection_info_free(struct mpd_connection_info *mpd_info);

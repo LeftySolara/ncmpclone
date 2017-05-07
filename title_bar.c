@@ -22,18 +22,17 @@
  ***************************************************************************/
 
 #include "title_bar.h"
+#include "mpd_info.h"
 #include <stdlib.h>
 #include <string.h>
 
 /* Create and initialize a title bar */
-struct title_bar *title_bar_init(char *title, struct mpd_connection *conn)
+struct title_bar *title_bar_init(char *title)
 {
     struct title_bar *title_bar = malloc(sizeof(struct title_bar));
-
     title_bar->win = newwin(2, COLS, 0, 0);
     title_bar->title = title;
     title_bar->width = COLS;
-    title_bar_update_volume(title_bar, conn);
 
     return title_bar;
 }
@@ -42,14 +41,13 @@ struct title_bar *title_bar_init(char *title, struct mpd_connection *conn)
 void title_bar_free(struct title_bar *title_bar)
 {
     delwin(title_bar->win);
-    mpd_status_free(title_bar->status);
+    title_bar->win = NULL;
 }
 
 /* Query the MPD server for the current volume level and update the label */
-void title_bar_update_volume(struct title_bar *title_bar, struct mpd_connection *conn)
+void title_bar_update_volume(struct title_bar *title_bar)
 {
-    title_bar->status = mpd_run_status(conn);
-    int volume = mpd_status_get_volume(title_bar->status);
+    int volume = mpd_status_get_volume(mpd_info->status);
     snprintf(title_bar->volume_label, 12, "Volume %d%%", volume);
 }
 
