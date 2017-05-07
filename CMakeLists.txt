@@ -13,7 +13,6 @@ set(SOURCE_FILES
         title_bar.c
         playlist.c
         queue_window.c
-        queue_list.c
         status_bar.c
         mpd_info.c)
 add_executable(ncmpclone ${SOURCE_FILES})
