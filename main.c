@@ -84,6 +84,7 @@ int main(int argc, char *argv[]) {
     wnoutrefresh(status_bar->win);
 
     int ch;
+    halfdelay(1);
     while ((ch = getch()) != 'q') {
 
         mpd_connection_info_update(mpd_info);
@@ -92,32 +93,27 @@ int main(int argc, char *argv[]) {
         title_bar_draw(title_bar);
 
         status_bar_draw(status_bar);
-        wnoutrefresh(status_bar->win);
+
+        queue_window_draw_all(queue_window);
 
         switch (ch) {
             case KEY_DOWN:
                 queue_window_move_cursor(queue_window, DOWN);
-                wnoutrefresh(queue_window->win);
                 break;
             case KEY_UP:
                 queue_window_move_cursor(queue_window, UP);
-                wnoutrefresh(queue_window->win);
                 break;
             case KEY_LEFT:
                 mpd_run_change_volume(mpd_info->connection, -1);
-                wnoutrefresh(title_bar->win);
                 break;
             case KEY_RIGHT:
                 mpd_run_change_volume(mpd_info->connection, 1);
-                wnoutrefresh(title_bar->win);
                 break;
             case KEY_NPAGE:
                 queue_window_scroll_page(queue_window, DOWN);
-                wnoutrefresh(queue_window->win);
                 break;
             case KEY_PPAGE:
                 queue_window_scroll_page(queue_window, UP);
-                wnoutrefresh(queue_window->win);
                 break;
             case KEY_RETURN:
                 mpd_run_play_id(mpd_info->connection, mpd_song_get_id(queue_window->selected->song));
@@ -129,6 +125,10 @@ int main(int argc, char *argv[]) {
                 mpd_run_stop(mpd_info->connection);
                 break;
         }
+
+        wnoutrefresh(status_bar->win);
+        wnoutrefresh(queue_window->win);
+        wnoutrefresh(title_bar->win);
         doupdate();
     }
 
