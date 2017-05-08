@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
     struct title_bar *title_bar = title_bar_init("Queue");
     struct queue_window *queue_window = queue_window_init();
-    struct status_bar *status_bar = status_bar_init(mpd_info->connection);
+    struct status_bar *status_bar = status_bar_init();
 
     mpd_connection_info_update(mpd_info);
 

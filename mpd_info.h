@@ -31,8 +31,8 @@ struct mpd_connection_info {
     struct mpd_status *status;
     struct mpd_song *current_song;
     char *host;
-    unsigned int port;
-    unsigned int timeout;
+    int port;
+    int timeout;
 };
 
 extern struct mpd_connection_info *mpd_info;
