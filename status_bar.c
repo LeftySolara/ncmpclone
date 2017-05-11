@@ -67,6 +67,10 @@ void status_bar_draw(struct status_bar *bar)
         mvwaddstr(bar->win, 1, strlen(state_label) + 1, track_label);
     }
 
+    bar->progress_label = create_progress_label(bar->progress_label);
+    if (bar->progress_label)
+        mvwaddstr(bar->win, 1, COLS - strlen(bar->progress_label), bar->progress_label);
+
     free(track_label);
 }
 
@@ -86,6 +90,29 @@ char *create_song_label(struct mpd_song *song)
         strcat(buffer, " - ");
         strcat(buffer, title);
     }
+
+    return buffer;
+}
+
+/* Create and return a string with the progress of the currently playing song */
+char *create_progress_label(char *buffer)
+{
+    int total_time = mpd_status_get_total_time(mpd_info->status);
+    int elapsed_time = mpd_status_get_elapsed_time(mpd_info->status);
+
+    if (total_time == 0) /* no song playing */
+        return NULL;
+
+    const size_t buf_size = strlen("[123:45/123:45]");
+    buffer = calloc(buf_size, sizeof(char));
+
+    int total_minutes = total_time / 60;
+    int total_seconds = total_time % 60;
+    int elapsed_minutes = elapsed_time / 60;
+    int elapsed_seconds = elapsed_time % 60;
+
+    snprintf(buffer, buf_size, "[%d:%02d/%d:%02d]",
+             elapsed_minutes, elapsed_seconds, total_minutes, total_seconds);
 
     return buffer;
 }

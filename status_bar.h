@@ -29,11 +29,13 @@
 
 struct status_bar {
     WINDOW *win;
+    char *progress_label;
 };
 
 struct status_bar *status_bar_init();
 void status_bar_free(struct status_bar *bar);
 void status_bar_draw(struct status_bar *bar);
 char *create_song_label(struct mpd_song *song);
+char *create_progress_label(char *buffer);
 
 #endif //NCMPCLONE_STATUS_BAR_H
