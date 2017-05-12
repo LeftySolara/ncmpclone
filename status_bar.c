@@ -30,6 +30,8 @@ struct status_bar *status_bar_init()
 {
     struct status_bar *status_bar = malloc(sizeof(struct status_bar));
     status_bar->win =newwin(2, COLS, LINES - 2, 0);
+    status_bar->notification = NULL;
+    status_bar->notify_end = 0;
 
     return status_bar;
 }
@@ -41,7 +43,6 @@ void status_bar_free(struct status_bar *bar)
 
 void status_bar_draw(struct status_bar *bar)
 {
-    char *track_label = create_song_label(mpd_info->current_song);
 
     wclear(bar->win);
     for (int i = 0; i < COLS; ++i)
@@ -50,6 +51,14 @@ void status_bar_draw(struct status_bar *bar)
     if (mpd_info->current_song == NULL)
         return;
 
+    if (bar->notification && time(NULL) <= bar->notify_end) {
+        wattr_on(bar->win, A_BOLD, NULL);
+        mvwaddstr(bar->win, 1, 0, bar->notification);
+        wattr_off(bar->win, A_BOLD, NULL);
+        return;
+    }
+
+    char *track_label = create_song_label(mpd_info->current_song);
     int state = mpd_status_get_state(mpd_info->status);
     char *state_label;
 

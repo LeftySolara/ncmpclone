@@ -26,10 +26,13 @@
 
 #include <ncurses.h>
 #include <mpd/client.h>
+#include <time.h>
 
 struct status_bar {
     WINDOW *win;
     char *progress_label;
+    char *notification;
+    time_t notify_end;
 };
 
 struct status_bar *status_bar_init();
