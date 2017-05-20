@@ -124,6 +124,12 @@ int main(int argc, char *argv[]) {
             case 's':
                 mpd_run_stop(mpd_info->connection);
                 break;
+            case '<':
+                mpd_run_previous(mpd_info->connection);
+                break;
+            case '>':
+                mpd_run_next(mpd_info->connection);
+                break;
             case 'z':
                 mpd_run_random(mpd_info->connection, !mpd_status_get_random(mpd_info->status));
                 status_bar->notification = !mpd_status_get_random(mpd_info->status) ?
