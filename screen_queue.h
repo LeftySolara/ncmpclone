@@ -21,8 +21,8 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#ifndef NCMPCLONE_WINDOW_QUEUE_H
-#define NCMPCLONE_WINDOW_QUEUE_H
+#ifndef NCMPCLONE_SCREEN_QUEUE_H
+#define NCMPCLONE_SCREEN_QUEUE_H
 
 #include "mpd_info.h"
 #include <stdbool.h>
@@ -41,7 +41,7 @@ struct queue_row {
     struct queue_row *prev;
 };
 
-struct queue_window {
+struct screen_queue {
     WINDOW *win;
     struct queue_row *head;
     struct queue_row *selected;
@@ -53,18 +53,20 @@ struct queue_window {
 struct queue_row *queue_row_init(struct mpd_song *song);
 void queue_row_free(struct queue_row *row);
 
-struct queue_window *queue_window_init();
-void queue_window_free(struct queue_window *window);
+struct screen_queue *screen_queue_init();
+void screen_queue_free(struct screen_queue *window);
 
-void queue_window_populate(struct queue_window *window);
-struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_song *song);
-void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x);
-void queue_window_draw_all(struct queue_window *window);
-void queue_window_move_cursor(struct queue_window *window, int direction);
-void queue_window_scroll_page(struct queue_window *window, int direction);
+void screen_queue_populate(struct screen_queue *window);
+struct queue_row *screen_queue_add_song(struct screen_queue *window,
+                                        struct mpd_song *song);
+void screen_queue_draw_row(struct screen_queue *window, struct queue_row *row,
+                           int begin_y, int begin_x);
+void screen_queue_draw_all(struct screen_queue *window);
+void screen_queue_move_cursor(struct screen_queue *window, int direction);
+void screen_queue_scroll_page(struct screen_queue *window, int direction);
 
 char *create_track_label(struct mpd_song *song);
 char *create_duration_label(struct mpd_song *song);
 
 
-#endif //NCMPCLONE_WINDOW_QUEUE_H
+#endif //NCMPCLONE_SCREEN_QUEUE_H

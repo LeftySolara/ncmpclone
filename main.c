@@ -22,7 +22,7 @@
  ***************************************************************************/
 
 #include "mpd_info.h"
-#include "queue_window.h"
+#include "screen_queue.h"
 #include "title_bar.h"
 #include "status_bar.h"
 
@@ -40,6 +40,7 @@
 // TODO: Fix status bar flickering
 
 struct mpd_connection_info *mpd_info;
+enum Screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
 
 int main(int argc, char *argv[]) {
 
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
     refresh();
 
     struct title_bar *title_bar = title_bar_init("Queue");
-    struct queue_window *queue_window = queue_window_init();
+    struct screen_queue *screen_queue = screen_queue_init();
     struct status_bar *status_bar = status_bar_init();
 
     mpd_connection_info_update(mpd_info);
@@ -74,16 +75,17 @@ int main(int argc, char *argv[]) {
     title_bar_update_volume(title_bar);
     title_bar_draw(title_bar);
 
-    queue_window_populate(queue_window);
-    queue_window_draw_all(queue_window);
+    screen_queue_populate(screen_queue);
+    screen_queue_draw_all(screen_queue);
 
     status_bar_draw(status_bar);
 
-    wnoutrefresh(queue_window->win);
+    wnoutrefresh(screen_queue->win);
     wnoutrefresh(title_bar->win);
     wnoutrefresh(status_bar->win);
 
     int ch;
+    enum Screen visible_screen = QUEUE;
     halfdelay(1);
     while ((ch = getch()) != 'q') {
 
@@ -94,14 +96,14 @@ int main(int argc, char *argv[]) {
 
         status_bar_draw(status_bar);
 
-        queue_window_draw_all(queue_window);
+        screen_queue_draw_all(screen_queue);
 
         switch (ch) {
             case KEY_DOWN:
-                queue_window_move_cursor(queue_window, DOWN);
+                screen_queue_move_cursor(screen_queue, DOWN);
                 break;
             case KEY_UP:
-                queue_window_move_cursor(queue_window, UP);
+                screen_queue_move_cursor(screen_queue, UP);
                 break;
             case KEY_LEFT:
                 mpd_run_change_volume(mpd_info->connection, -1);
@@ -110,13 +112,13 @@ int main(int argc, char *argv[]) {
                 mpd_run_change_volume(mpd_info->connection, 1);
                 break;
             case KEY_NPAGE:
-                queue_window_scroll_page(queue_window, DOWN);
+                screen_queue_scroll_page(screen_queue, DOWN);
                 break;
             case KEY_PPAGE:
-                queue_window_scroll_page(queue_window, UP);
+                screen_queue_scroll_page(screen_queue, UP);
                 break;
             case KEY_RETURN:
-                mpd_run_play_id(mpd_info->connection, mpd_song_get_id(queue_window->selected->song));
+                mpd_run_play_id(mpd_info->connection, mpd_song_get_id(screen_queue->selected->song));
                 break;
             case 'p':
                 mpd_run_toggle_pause(mpd_info->connection);
@@ -138,14 +140,18 @@ int main(int argc, char *argv[]) {
                 break;
         }
 
+        switch (visible_screen) {
+            case QUEUE:
+                wnoutrefresh(screen_queue->win);
+        }
+
         wnoutrefresh(status_bar->win);
-        wnoutrefresh(queue_window->win);
         wnoutrefresh(title_bar->win);
         doupdate();
     }
 
     title_bar_free(title_bar);
-    queue_window_free(queue_window);
+    screen_queue_free(screen_queue);
     status_bar_free(status_bar);
     endwin();
 

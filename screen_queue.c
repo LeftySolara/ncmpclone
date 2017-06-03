@@ -1,5 +1,5 @@
 /******************************************************************************
- * queue_window.c : main window for the queue screen
+ * screen_queue.c : main window for the queue screen
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,7 +21,7 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#include "queue_window.h"
+#include "screen_queue.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -55,9 +55,9 @@ void queue_row_free(struct queue_row *row)
 
 /*****************************************************************************/
 
-struct queue_window *queue_window_init()
+struct screen_queue *screen_queue_init()
 {
-    struct queue_window *window = malloc(sizeof(*window));
+    struct screen_queue *window = malloc(sizeof(*window));
 
     /* The window starts just under the title bar and uses the full width
      * of the screen */
@@ -71,7 +71,7 @@ struct queue_window *queue_window_init()
     return window;
 }
 
-void queue_window_free(struct queue_window *window)
+void screen_queue_free(struct screen_queue *window)
 {
     struct queue_row *current = window->head;
     while (window->head) {
@@ -90,7 +90,7 @@ void queue_window_free(struct queue_window *window)
 }
 
 /* Populate the queue window with songs from the current MPD queue */
-void queue_window_populate(struct queue_window *window)
+void screen_queue_populate(struct screen_queue *window)
 {
     if (mpd_info->connection == NULL)
         return;
@@ -101,7 +101,7 @@ void queue_window_populate(struct queue_window *window)
 
     while ((song = mpd_recv_song(mpd_info->connection)) != NULL) {
         row = queue_row_init(song);
-        queue_window_add_song(window, row->song);
+        screen_queue_add_song(window, row->song);
     }
 
     int i = 1;
@@ -113,7 +113,8 @@ void queue_window_populate(struct queue_window *window)
 }
 
 /* Add a song to the current MPD queue */
-struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_song *song)
+struct queue_row *screen_queue_add_song(struct screen_queue *window,
+                                        struct mpd_song *song)
 {
     struct queue_row *row = queue_row_init(song);
 
@@ -135,7 +136,8 @@ struct queue_row *queue_window_add_song(struct queue_window *window, struct mpd_
 }
 
 /* Draw a row on the queue window */
-void queue_window_draw_row(struct queue_window *window, struct queue_row *row, int begin_y, int begin_x)
+void screen_queue_draw_row(struct screen_queue *window, struct queue_row *row,
+                           int begin_y, int begin_x)
 {
     if (begin_y >= window->max_visible)
         return;
@@ -157,18 +159,18 @@ void queue_window_draw_row(struct queue_window *window, struct queue_row *row, i
 }
 
 /* Draw all nodes in a queue window's list */
-void queue_window_draw_all(struct queue_window *window)
+void screen_queue_draw_all(struct screen_queue *window)
 {
     struct queue_row *current = window->top_visible;
 
     int i = 0;
     while (current != window->bottom_visible->next) {
-        queue_window_draw_row(window, current, i++, 0);
+        screen_queue_draw_row(window, current, i++, 0);
         current = current->next;
     }
 }
 
-void queue_window_move_cursor(struct queue_window *window, int direction)
+void screen_queue_move_cursor(struct screen_queue *window, int direction)
 {
     struct queue_row *current = window->selected;
 
@@ -202,19 +204,19 @@ void queue_window_move_cursor(struct queue_window *window, int direction)
         window->selected = current->prev;
     }
 
-    queue_window_draw_all(window);
+    screen_queue_draw_all(window);
 }
 
 /* Scroll the window one page in the specified direction */
-void queue_window_scroll_page(struct queue_window *window, int direction)
+void screen_queue_scroll_page(struct screen_queue *window, int direction)
 {
     if (window->selected == NULL)
         return;
 
     for (int i = 0; i < window->max_visible - 1; ++i)
-        queue_window_move_cursor(window, direction);
+        screen_queue_move_cursor(window, direction);
 
-    queue_window_draw_all(window);
+    screen_queue_draw_all(window);
 }
 
 /* Create a song label of the format "artist - title" */

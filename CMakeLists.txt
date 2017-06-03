@@ -11,7 +11,7 @@ include_directories(${CURSES_INCLUDE_DIR})
 set(SOURCE_FILES
         main.c
         title_bar.c
-        queue_window.c
+        screen_queue.c
         status_bar.c
         mpd_info.c)
 add_executable(ncmpclone ${SOURCE_FILES})
