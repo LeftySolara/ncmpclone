@@ -33,12 +33,6 @@
 
 #define KEY_RETURN 10 /* the KEY_ENTER in ncurses doesn't seem to be working */
 
-// TODO: Add optional command-line arguments for MPD host and port
-// TODO: Check for MPD_HOST and MPD_PORT environment variables before connecting
-
-// TODO: Currently playing song is displaying in bold (correctly), but doesn't update without user input
-// TODO: Fix status bar flickering
-
 struct mpd_connection_info *mpd_info;
 enum Screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
 
