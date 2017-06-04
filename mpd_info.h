@@ -37,7 +37,7 @@ struct mpd_connection_info {
 
 extern struct mpd_connection_info *mpd_info;
 
-struct mpd_connection_info *mpd_connection_info_init();
+struct mpd_connection_info *mpd_connection_info_init(char *host, char *port, char *timeout);
 void mpd_connection_info_free(struct mpd_connection_info *mpd_info);
 void mpd_connection_info_update(struct mpd_connection_info *mpd_info);
 enum mpd_error mpd_make_connection(struct mpd_connection_info *mpd_info);

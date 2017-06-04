@@ -24,14 +24,15 @@
 #include "mpd_info.h"
 #include <stdlib.h>
 
-struct mpd_connection_info *mpd_connection_info_init()
+struct mpd_connection_info *mpd_connection_info_init(char *host, char *port, char *timeout)
 {
     struct mpd_connection_info *info = malloc(sizeof(struct mpd_connection_info));
     info->connection = NULL;
     info->status = NULL;
-    info->host = "localhost";
-    info->port = 6600;
-    info->timeout = 30000;
+
+    info->host = (host == NULL) ? "localhost" : host;
+    info->port = (port == NULL) ? 6600 : atoi(port);
+    info->timeout = (timeout == NULL) ? 30000 : atoi(timeout);
 
     return info;
 }

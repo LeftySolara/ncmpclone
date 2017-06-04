@@ -27,33 +27,21 @@
 #include "title_bar.h"
 #include "status_bar.h"
 
-#include <menu.h>
 #include <panel.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 
-#define KEY_RETURN 10 /* the KEY_ENTER in ncurses doesn't seem to be working */
-#define DEFAULT_SCREEN QUEUE
+#define KEY_RETURN 10 /* KEY_ENTER in ncurses doesn't seem to be working */
+#define NUM_PANELS 2
 
+
+enum mpd_error mpd_err;
 struct mpd_connection_info *mpd_info;
+
 enum Screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
 
-int main(int argc, char *argv[]) {
-
-    mpd_info = mpd_connection_info_init();
-    mpd_info->host = argv[1];
-    mpd_info->port = atoi(argv[2]);
-    mpd_info->timeout = atoi(argv[3]);
-
-    enum mpd_error err = mpd_make_connection(mpd_info);
-    if (err != MPD_ERROR_SUCCESS) {
-        printf("%s\n", mpd_connection_get_error_message(mpd_info->connection));
-        mpd_connection_info_free(mpd_info);
-        exit(err);
-    }
-
-    /* Initialize ncurses */
+void ncurses_init()
+{
     setlocale(LC_ALL, "");
     initscr();
     cbreak();
@@ -62,66 +50,73 @@ int main(int argc, char *argv[]) {
     nodelay(stdscr, 1);
     keypad(stdscr, TRUE);
     refresh();
+}
 
+/* Attempt to connect to MPD. Defaults to the local server. */
+void mpd_setup(char *host, char *port, char *timeout)
+{
+    mpd_info = mpd_connection_info_init(host, port, timeout);
+    mpd_err = mpd_make_connection(mpd_info);
+    if (mpd_err != MPD_ERROR_SUCCESS) {
+        printf("%s\n", mpd_connection_get_error_message(mpd_info->connection));
+        mpd_connection_info_free(mpd_info);
+        exit(mpd_err);
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    mpd_setup(argv[1], argv[2], argv[3]);
+    ncurses_init();
+
+    /* Initialize the UI */
     struct title_bar *title_bar = title_bar_init("Queue");
-    struct screen_queue *screen_queue = screen_queue_init();
-    struct screen_help *screen_help = screen_help_init();
     struct status_bar *status_bar = status_bar_init();
+    struct screen_help *screen_help = screen_help_init();
+    struct screen_queue *screen_queue = screen_queue_init();
 
-    PANEL *top;
+    PANEL *visible_screen;
     PANEL *screen_panels[2];
     WINDOW *screen_wins[] = {
             screen_help->win,
             screen_queue->win
     };
 
-    screen_panels[0] = new_panel(screen_wins[0]);
-    screen_panels[1] = new_panel(screen_wins[1]);
-
-    set_panel_userptr(screen_panels[0], screen_panels[1]);
-    set_panel_userptr(screen_panels[1], screen_panels[0]);
+    screen_panels[HELP] = new_panel(screen_wins[HELP]);
+    screen_panels[QUEUE] = new_panel(screen_wins[QUEUE]);
     update_panels();
     doupdate();
-    top = screen_panels[1];
 
     mpd_connection_info_update(mpd_info);
-
     title_bar_update_volume(title_bar);
-    title_bar_draw(title_bar);
-
     screen_queue_populate(screen_queue);
+
+    title_bar_draw(title_bar);
+    status_bar_draw(status_bar);
+    screen_help_draw(screen_help);
     screen_queue_draw_all(screen_queue);
 
-    screen_help_draw(screen_help);
-
-    status_bar_draw(status_bar);
-
-    wnoutrefresh(screen_queue->win);
     wnoutrefresh(title_bar->win);
     wnoutrefresh(status_bar->win);
+    wnoutrefresh(screen_queue->win);
+
 
     int ch;
-    enum Screen visible_screen = QUEUE;
-    halfdelay(1);
+    halfdelay(1); /* Dirty hack to prevent screen flickering. Will fix. */
     while ((ch = getch()) != 'q') {
-
         mpd_connection_info_update(mpd_info);
-
         title_bar_update_volume(title_bar);
         title_bar_draw(title_bar);
-
         status_bar_draw(status_bar);
-
-        screen_queue_draw_all(screen_queue);
 
         switch (ch) {
             case '1':
-                top = screen_panels[0];
-                top_panel(top);
+                visible_screen = screen_panels[HELP];
+                top_panel(visible_screen);
                 break;
             case '2':
-                top = screen_panels[1];
-                top_panel(top);
+                visible_screen = screen_panels[QUEUE];
+                top_panel(visible_screen);
                 break;
             case KEY_DOWN:
                 screen_queue_move_cursor(screen_queue, DOWN);
@@ -170,11 +165,15 @@ int main(int argc, char *argv[]) {
         doupdate();
     }
 
-    title_bar_free(title_bar);
-    screen_queue_free(screen_queue);
-    status_bar_free(status_bar);
-    endwin();
+    for (int i = 0; i < NUM_PANELS; ++i)
+        del_panel(screen_panels[i]);
 
+    title_bar_free(title_bar);
+    status_bar_free(status_bar);
+    screen_help_free(screen_help);
+    screen_queue_free(screen_queue);
+
+    endwin();
     mpd_connection_info_free(mpd_info);
 
     return 0;
