@@ -23,15 +23,18 @@
 
 #include "mpd_info.h"
 #include "screen_queue.h"
+#include "screen_help.h"
 #include "title_bar.h"
 #include "status_bar.h"
 
 #include <menu.h>
+#include <panel.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 
 #define KEY_RETURN 10 /* the KEY_ENTER in ncurses doesn't seem to be working */
+#define DEFAULT_SCREEN QUEUE
 
 struct mpd_connection_info *mpd_info;
 enum Screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
@@ -62,7 +65,24 @@ int main(int argc, char *argv[]) {
 
     struct title_bar *title_bar = title_bar_init("Queue");
     struct screen_queue *screen_queue = screen_queue_init();
+    struct screen_help *screen_help = screen_help_init();
     struct status_bar *status_bar = status_bar_init();
+
+    PANEL *top;
+    PANEL *screen_panels[2];
+    WINDOW *screen_wins[] = {
+            screen_help->win,
+            screen_queue->win
+    };
+
+    screen_panels[0] = new_panel(screen_wins[0]);
+    screen_panels[1] = new_panel(screen_wins[1]);
+
+    set_panel_userptr(screen_panels[0], screen_panels[1]);
+    set_panel_userptr(screen_panels[1], screen_panels[0]);
+    update_panels();
+    doupdate();
+    top = screen_panels[1];
 
     mpd_connection_info_update(mpd_info);
 
@@ -71,6 +91,8 @@ int main(int argc, char *argv[]) {
 
     screen_queue_populate(screen_queue);
     screen_queue_draw_all(screen_queue);
+
+    screen_help_draw(screen_help);
 
     status_bar_draw(status_bar);
 
@@ -93,6 +115,14 @@ int main(int argc, char *argv[]) {
         screen_queue_draw_all(screen_queue);
 
         switch (ch) {
+            case '1':
+                top = screen_panels[0];
+                top_panel(top);
+                break;
+            case '2':
+                top = screen_panels[1];
+                top_panel(top);
+                break;
             case KEY_DOWN:
                 screen_queue_move_cursor(screen_queue, DOWN);
                 break;
@@ -134,11 +164,7 @@ int main(int argc, char *argv[]) {
                 break;
         }
 
-        switch (visible_screen) {
-            case QUEUE:
-                wnoutrefresh(screen_queue->win);
-        }
-
+        update_panels();
         wnoutrefresh(status_bar->win);
         wnoutrefresh(title_bar->win);
         doupdate();
