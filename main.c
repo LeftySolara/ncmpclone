@@ -36,9 +36,10 @@
 
 
 enum mpd_error mpd_err;
+enum main_screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
+
 struct mpd_connection_info *mpd_info;
 
-enum Screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
 
 void ncurses_init()
 {
@@ -79,7 +80,7 @@ int main(int argc, char *argv[])
     PANEL *screen_panels[2];
     WINDOW *screen_wins[] = {
             screen_help->win,
-            screen_queue->win
+            screen_queue->list->win
     };
 
     screen_panels[HELP] = new_panel(screen_wins[HELP]);
@@ -88,17 +89,18 @@ int main(int argc, char *argv[])
     doupdate();
 
     mpd_connection_info_update(mpd_info);
+    mpd_connection_info_get_queue(mpd_info);
     title_bar_update_volume(title_bar);
-    screen_queue_populate(screen_queue);
+    screen_queue_populate_list(screen_queue);
 
     title_bar_draw(title_bar);
     status_bar_draw(status_bar);
     screen_help_draw(screen_help);
-    screen_queue_draw_all(screen_queue);
+    screen_queue_draw(screen_queue);
 
     wnoutrefresh(title_bar->win);
     wnoutrefresh(status_bar->win);
-    wnoutrefresh(screen_queue->win);
+    wnoutrefresh(screen_queue->list->win);
 
 
     int ch;
@@ -137,7 +139,7 @@ int main(int argc, char *argv[])
                 screen_queue_scroll_page(screen_queue, UP);
                 break;
             case KEY_RETURN:
-                mpd_run_play_id(mpd_info->connection, mpd_song_get_id(screen_queue->selected->song));
+                mpd_run_play_pos(mpd_info->connection, screen_queue->list->selected_index);
                 break;
             case 'p':
                 mpd_run_toggle_pause(mpd_info->connection);
@@ -158,7 +160,6 @@ int main(int argc, char *argv[])
                 status_bar->notify_end = time(NULL) + 3;
                 break;
         }
-
         update_panels();
         wnoutrefresh(status_bar->win);
         wnoutrefresh(title_bar->win);

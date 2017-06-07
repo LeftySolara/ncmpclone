@@ -25,48 +25,32 @@
 #define NCMPCLONE_SCREEN_QUEUE_H
 
 #include "mpd_info.h"
+#include "list.h"
 #include <stdbool.h>
 #include <ncurses.h>
 
-#define DOWN 1
-#define UP 2
-
-struct queue_row {
-    struct mpd_song *song;
-    char *song_label;
-    char *duration_label;
-    bool is_selected;
-
-    struct queue_row *next;
-    struct queue_row *prev;
-};
-
 struct screen_queue {
-    WINDOW *win;
-    struct queue_row *head;
-    struct queue_row *selected;
-    struct queue_row *top_visible;
-    struct queue_row *bottom_visible;
-    int max_visible;
+    struct list *list;
 };
-
-struct queue_row *queue_row_init(struct mpd_song *song);
-void queue_row_free(struct queue_row *row);
 
 struct screen_queue *screen_queue_init();
-void screen_queue_free(struct screen_queue *window);
+void screen_queue_free(struct screen_queue *screen_queue);
 
-void screen_queue_populate(struct screen_queue *window);
-struct queue_row *screen_queue_add_song(struct screen_queue *window,
-                                        struct mpd_song *song);
-void screen_queue_draw_row(struct screen_queue *window, struct queue_row *row,
-                           int begin_y, int begin_x);
-void screen_queue_draw_all(struct screen_queue *window);
-void screen_queue_move_cursor(struct screen_queue *window, int direction);
-void screen_queue_scroll_page(struct screen_queue *window, int direction);
-
+void screen_queue_populate_list(struct screen_queue *screen_queue);
 char *create_track_label(struct mpd_song *song);
 char *create_duration_label(struct mpd_song *song);
+
+static inline void screen_queue_draw(struct screen_queue *screen_queue) {
+    list_draw(screen_queue->list);
+}
+
+static inline void screen_queue_move_cursor(struct screen_queue *screen_queue, enum direction direction) {
+        list_move_cursor(screen_queue->list, direction);
+}
+
+static inline void screen_queue_scroll_page(struct screen_queue *screen_queue, enum direction direction) {
+    list_scroll_page(screen_queue->list, direction);
+}
 
 
 #endif //NCMPCLONE_SCREEN_QUEUE_H

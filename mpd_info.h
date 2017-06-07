@@ -26,10 +26,16 @@
 
 #include <mpd/client.h>
 
+struct queue_song {
+    struct mpd_song *song;
+    struct queue_song *next;
+};
+
 struct mpd_connection_info {
     struct mpd_connection *connection;
     struct mpd_status *status;
     struct mpd_song *current_song;
+    struct queue_song *queue_head;
     char *host;
     int port;
     int timeout;
@@ -37,9 +43,14 @@ struct mpd_connection_info {
 
 extern struct mpd_connection_info *mpd_info;
 
+struct queue_song *queue_song_init(struct mpd_song *song);
+void queue_song_free(struct queue_song *queue_song);
+void queue_song_append(struct queue_song **head, struct queue_song *song);
+
 struct mpd_connection_info *mpd_connection_info_init(char *host, char *port, char *timeout);
 void mpd_connection_info_free(struct mpd_connection_info *mpd_info);
 void mpd_connection_info_update(struct mpd_connection_info *mpd_info);
+void mpd_connection_info_get_queue(struct mpd_connection_info *mpd_info);
 enum mpd_error mpd_make_connection(struct mpd_connection_info *mpd_info);
 
 #endif //NCMPCLONE_MPD_INFO_H

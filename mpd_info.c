@@ -24,6 +24,36 @@
 #include "mpd_info.h"
 #include <stdlib.h>
 
+struct queue_song *queue_song_init(struct mpd_song *song)
+{
+    struct queue_song *queue_song = malloc(sizeof(*queue_song));
+    queue_song->song = song;
+    queue_song->next = NULL;
+
+    return queue_song;
+}
+
+void queue_song_free(struct queue_song *queue_song)
+{
+    mpd_song_free(queue_song->song);
+    queue_song->song = NULL;
+    queue_song->next = NULL;
+    free(queue_song);
+}
+
+void queue_song_append(struct queue_song **head, struct queue_song *song)
+{
+    if (*head == NULL)
+        *head = song;
+    else {
+        struct queue_song *current = *head;
+        while (current->next)
+            current = current->next;
+
+        current->next = song;
+    }
+}
+
 struct mpd_connection_info *mpd_connection_info_init(char *host, char *port, char *timeout)
 {
     struct mpd_connection_info *info = malloc(sizeof(struct mpd_connection_info));
@@ -46,6 +76,13 @@ void mpd_connection_info_free(struct mpd_connection_info *mpd_info)
 
     mpd_info->connection = NULL;
     mpd_info->status = NULL;
+
+    struct queue_song *current = mpd_info->queue_head;
+    while (mpd_info->queue_head) {
+        mpd_info->queue_head = current->next;
+        queue_song_free(current);
+        current = mpd_info->queue_head;
+    }
 }
 
 /* Query the MPD server for current information */
@@ -53,6 +90,21 @@ void mpd_connection_info_update(struct mpd_connection_info *mpd_info)
 {
     mpd_info->status = mpd_run_status(mpd_info->connection);
     mpd_info->current_song = mpd_run_current_song(mpd_info->connection);
+}
+
+void mpd_connection_info_get_queue(struct mpd_connection_info *mpd_info)
+{
+    if (!mpd_info->connection)
+        return;
+
+    struct mpd_song *song;
+    struct queue_song *queue_song;
+    mpd_send_list_queue_meta(mpd_info->connection);
+
+    while ((song = mpd_recv_song(mpd_info->connection))) {
+        queue_song = queue_song_init(song);
+        queue_song_append(&mpd_info->queue_head, queue_song);
+    }
 }
 
 enum mpd_error mpd_make_connection(struct mpd_connection_info *mpd_info)

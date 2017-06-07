@@ -13,7 +13,9 @@ set(SOURCE_FILES
         title_bar.c
         screen_queue.c
         status_bar.c
-        mpd_info.c screen_help.c screen_help.h)
+        mpd_info.c
+        screen_help.c
+        list.c)
 add_executable(ncmpclone ${SOURCE_FILES})
 target_link_libraries(ncmpclone -lmenu -lpanel ${CURSES_LIBRARIES})
 target_link_libraries(ncmpclone mpdclient)
