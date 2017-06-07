@@ -39,6 +39,15 @@ enum mpd_error mpd_err;
 enum main_screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
 
 struct mpd_connection_info *mpd_info;
+char *screen_titles[] = {
+        "Help",
+        "Queue",
+        "Browse:",
+        "All artists",
+        "Search:",
+        "Lyrics",
+        "Outputs"
+};
 
 
 void ncurses_init()
@@ -71,7 +80,7 @@ int main(int argc, char *argv[])
     ncurses_init();
 
     /* Initialize the UI */
-    struct title_bar *title_bar = title_bar_init("Queue");
+    struct title_bar *title_bar = title_bar_init(screen_titles[QUEUE]);
     struct status_bar *status_bar = status_bar_init();
     struct screen_help *screen_help = screen_help_init();
     struct screen_queue *screen_queue = screen_queue_init();
@@ -114,10 +123,12 @@ int main(int argc, char *argv[])
         switch (ch) {
             case '1':
                 visible_screen = screen_panels[HELP];
+                title_bar->title = screen_titles[HELP];
                 top_panel(visible_screen);
                 break;
             case '2':
                 visible_screen = screen_panels[QUEUE];
+                title_bar->title = screen_titles[QUEUE];
                 top_panel(visible_screen);
                 break;
             case KEY_DOWN:
