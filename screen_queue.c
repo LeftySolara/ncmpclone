@@ -90,3 +90,24 @@ char *create_duration_label(struct mpd_song *song)
 
     return buffer;
 }
+
+void screen_queue_cmd(command_t cmd, struct screen_queue *screen)
+{
+    switch (cmd) {
+        case CMD_LIST_MOVE_UP:
+            list_move_cursor(screen->list, UP);
+            break;
+        case CMD_LIST_MOVE_DOWN:
+            list_move_cursor(screen->list, DOWN);
+            break;
+        case CMD_LIST_PAGE_UP:
+            list_scroll_page(screen->list, UP);
+            break;
+        case CMD_LIST_PAGE_DOWN:
+            list_scroll_page(screen->list, DOWN);
+            break;
+        case CMD_PLAY:
+            mpd_run_play_pos(mpd_info->connection, screen->list->selected_index);
+            break;
+    }
+}

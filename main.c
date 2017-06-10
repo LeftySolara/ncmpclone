@@ -26,14 +26,14 @@
 #include "screen_help.h"
 #include "title_bar.h"
 #include "status_bar.h"
+#include "command.h"
+#include "command_player.h"
 
 #include <panel.h>
 #include <stdlib.h>
 #include <locale.h>
 
-#define KEY_RETURN 10 /* KEY_ENTER in ncurses doesn't seem to be working */
 #define NUM_PANELS 2
-
 
 enum mpd_error mpd_err;
 enum main_screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
@@ -49,30 +49,10 @@ char *screen_titles[] = {
         "Outputs"
 };
 
-
-void ncurses_init()
-{
-    setlocale(LC_ALL, "");
-    initscr();
-    cbreak();
-    noecho();
-    curs_set(0);
-    nodelay(stdscr, 1);
-    keypad(stdscr, TRUE);
-    refresh();
-}
-
-/* Attempt to connect to MPD. Defaults to the local server. */
-void mpd_setup(char *host, char *port, char *timeout)
-{
-    mpd_info = mpd_connection_info_init(host, port, timeout);
-    mpd_err = mpd_make_connection(mpd_info);
-    if (mpd_err != MPD_ERROR_SUCCESS) {
-        printf("%s\n", mpd_connection_get_error_message(mpd_info->connection));
-        mpd_connection_info_free(mpd_info);
-        exit(mpd_err);
-    }
-}
+void ncurses_init();
+void mpd_setup(char *host, char *port, char *timeout);
+void screen_cmd(command_t cmd, enum main_screen *visible_screen,
+                PANEL **panels, struct title_bar *title_bar);
 
 int main(int argc, char *argv[])
 {
@@ -85,7 +65,7 @@ int main(int argc, char *argv[])
     struct screen_help *screen_help = screen_help_init();
     struct screen_queue *screen_queue = screen_queue_init();
 
-    PANEL *visible_screen;
+    enum main_screen visible_screen = QUEUE;
     PANEL *screen_panels[2];
     WINDOW *screen_wins[] = {
             screen_help->win,
@@ -113,64 +93,25 @@ int main(int argc, char *argv[])
 
 
     int ch;
+    command_t cmd;
     halfdelay(1); /* Dirty hack to prevent screen flickering. Will fix. */
-    while ((ch = getch()) != 'q') {
+    while (cmd != CMD_QUIT) {
         mpd_connection_info_update(mpd_info);
         title_bar_update_volume(title_bar);
         title_bar_draw(title_bar);
         status_bar_draw(status_bar);
 
-        switch (ch) {
-            case '1':
-                visible_screen = screen_panels[HELP];
-                title_bar->title = screen_titles[HELP];
-                top_panel(visible_screen);
-                break;
-            case '2':
-                visible_screen = screen_panels[QUEUE];
-                title_bar->title = screen_titles[QUEUE];
-                top_panel(visible_screen);
-                break;
-            case KEY_DOWN:
-                screen_queue_move_cursor(screen_queue, DOWN);
-                break;
-            case KEY_UP:
-                screen_queue_move_cursor(screen_queue, UP);
-                break;
-            case KEY_LEFT:
-                mpd_run_change_volume(mpd_info->connection, -1);
-                break;
-            case KEY_RIGHT:
-                mpd_run_change_volume(mpd_info->connection, 1);
-                break;
-            case KEY_NPAGE:
-                screen_queue_scroll_page(screen_queue, DOWN);
-                break;
-            case KEY_PPAGE:
-                screen_queue_scroll_page(screen_queue, UP);
-                break;
-            case KEY_RETURN:
-                mpd_run_play_pos(mpd_info->connection, screen_queue->list->selected_index);
-                break;
-            case 'p':
-                mpd_run_toggle_pause(mpd_info->connection);
-                break;
-            case 's':
-                mpd_run_stop(mpd_info->connection);
-                break;
-            case '<':
-                mpd_run_previous(mpd_info->connection);
-                break;
-            case '>':
-                mpd_run_next(mpd_info->connection);
-                break;
-            case 'z':
-                mpd_run_random(mpd_info->connection, !mpd_status_get_random(mpd_info->status));
-                status_bar->notification = !mpd_status_get_random(mpd_info->status) ?
-                                           "Random mode is on" : "Random mode is off";
-                status_bar->notify_end = time(NULL) + 3;
+        ch = getch();
+        cmd = find_key_command(ch);
+
+        switch(visible_screen) {
+            case QUEUE:
+                screen_queue_cmd(cmd, screen_queue);
                 break;
         }
+        player_cmd(cmd, status_bar);
+        screen_cmd(cmd, &visible_screen, screen_panels, title_bar);
+
         update_panels();
         wnoutrefresh(status_bar->win);
         wnoutrefresh(title_bar->win);
@@ -189,4 +130,45 @@ int main(int argc, char *argv[])
     mpd_connection_info_free(mpd_info);
 
     return 0;
+}
+
+void ncurses_init()
+{
+    setlocale(LC_ALL, "");
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    nodelay(stdscr, 1);
+    keypad(stdscr, TRUE);
+    refresh();
+}
+
+/* Attempt to connect to MPD. Defaults to the local server. */
+void mpd_setup(char *host, char *port, char *timeout)
+{
+    mpd_info = mpd_connection_info_init(host, port, timeout);
+    mpd_err = mpd_make_connection(mpd_info);
+    if (mpd_err != MPD_ERROR_SUCCESS) {
+        printf("%s\n", mpd_connection_get_error_message(mpd_info->connection));
+        mpd_connection_info_free(mpd_info);
+        exit(mpd_err);
+    }
+}
+
+void screen_cmd(command_t cmd, enum main_screen *visible_screen,
+                PANEL **panels, struct title_bar *title_bar)
+{
+    switch(cmd) {
+        case CMD_SCREEN_HELP:
+            *visible_screen = HELP;
+            title_bar->title = screen_titles[HELP];
+            top_panel(panels[*visible_screen]);
+            break;
+        case CMD_SCREEN_QUEUE:
+            *visible_screen = QUEUE;
+            title_bar->title = screen_titles[QUEUE];
+            top_panel(panels[*visible_screen]);
+            break;
+    }
 }

@@ -15,7 +15,10 @@ set(SOURCE_FILES
         status_bar.c
         mpd_info.c
         screen_help.c
-        list.c)
+        list.c
+        command.c
+        command_player.c
+        )
 add_executable(ncmpclone ${SOURCE_FILES})
 target_link_libraries(ncmpclone -lmenu -lpanel ${CURSES_LIBRARIES})
 target_link_libraries(ncmpclone mpdclient)

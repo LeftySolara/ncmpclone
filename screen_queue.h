@@ -26,6 +26,7 @@
 
 #include "mpd_info.h"
 #include "list.h"
+#include "command.h"
 #include <stdbool.h>
 #include <ncurses.h>
 
@@ -51,6 +52,8 @@ static inline void screen_queue_move_cursor(struct screen_queue *screen_queue, e
 static inline void screen_queue_scroll_page(struct screen_queue *screen_queue, enum direction direction) {
     list_scroll_page(screen_queue->list, direction);
 }
+
+void screen_queue_cmd(command_t cmd, struct screen_queue *screen);
 
 
 #endif //NCMPCLONE_SCREEN_QUEUE_H
