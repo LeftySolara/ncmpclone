@@ -34,19 +34,19 @@ static command_def_t cmds[] = {
         {CMD_NONE, {0, 0, 0}, "None", "Null command"},
 
         {CMD_PLAY, {KEY_RETURN, 0, 0,},"Play",
-        "Play the currently selected item"},
+        "Play"},
 
-        {CMD_PAUSE, {'P', KEY_BACKSPACE, 0}, "Pause",
-        "Pause the currently playing song"},
+        {CMD_PAUSE, {'P', 0, 0}, "Pause",
+        "Pause"},
 
-        {CMD_STOP, {'s', 0, 0}, "Stop",
-        "Stop the currently playing song"},
+        {CMD_STOP, {'s', KEY_BACKSPACE, 0}, "Stop",
+        "Stop"},
 
         {CMD_NEXT_SONG, {'>', 0, 0}, "Next song",
-        "Play the next song from the queue"},
+        "Next song"},
 
         {CMD_PREV_SONG, {'<', 0, 0}, "Previous song",
-        "Play the previous song from the queue"},
+        "Previous song"},
 
         {CMD_RANDOM, {'z', 0, 0}, "Random",
         "Toggle random mode"},
@@ -70,13 +70,13 @@ static command_def_t cmds[] = {
         "Page down"},
 
         {CMD_SCREEN_HELP, {'1', KEY_F(1), 'h'}, "Help",
-        "Display the help screen"},
+        "Help screen"},
 
         {CMD_SCREEN_QUEUE, {'2', KEY_F(2), 0}, "Queue",
-        "Display the queue screen"},
+        "Queue screen"},
 
-        {CMD_QUIT, {'q', 0, 0}, "Quit",
-        "Exit ncmpclone"}
+        {CMD_QUIT, {'q', 'Q', 0}, "Quit",
+        "Quit"}
 };
 
 command_t find_key_command(int key)
