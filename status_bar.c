@@ -41,16 +41,33 @@ void status_bar_free(struct status_bar *bar)
     delwin(bar->win);
 }
 
+/* Draw a progress bar for the currently playing track */
+void status_bar_draw_progress(struct status_bar *bar)
+{
+    whline(bar->win, ACS_HLINE, getmaxx(bar->win));
+    if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP)
+        return;
+
+    double song_length = mpd_song_get_duration(mpd_info->current_song);
+    double time_elapsed = mpd_status_get_elapsed_time(mpd_info->status);
+    double width = getmaxx(bar->win);
+
+    double secs_per_tick = song_length / width;
+    double tick_size = (width / song_length) + 1;
+    double ticks_elapsed = time_elapsed / tick_size;
+
+    whline(bar->win, '=', (tick_size * ticks_elapsed) / secs_per_tick);
+    mvwaddch(bar->win, 0, (tick_size * ticks_elapsed) / secs_per_tick, 'O');
+}
+
 void status_bar_draw(struct status_bar *bar)
 {
-
     wclear(bar->win);
-    for (int i = 0; i < COLS; ++i)
-        waddch(bar->win, ACS_HLINE);
 
     if (mpd_info->current_song == NULL)
         return;
 
+    status_bar_draw_progress(bar);
     if (bar->notification && time(NULL) <= bar->notify_end) {
         wattr_on(bar->win, A_BOLD, NULL);
         mvwaddstr(bar->win, 1, 0, bar->notification);
