@@ -1,5 +1,5 @@
 /******************************************************************************
- * command.c : interface for user input commands
+ * command.h : interface for user input commands
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -54,5 +54,7 @@ typedef struct {
 
 
 command_t find_key_command(int key);
+char *get_command_keys(command_t cmd);
+char *get_command_desc(command_t cmd);
 
 #endif //NCMPCLONE_COMMAND_H

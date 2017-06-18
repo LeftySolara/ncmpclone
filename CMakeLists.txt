@@ -18,7 +18,7 @@ set(SOURCE_FILES
         list.c
         command.c
         command_player.c
-        )
+        ncmpclone_ncurses.c)
 add_executable(ncmpclone ${SOURCE_FILES})
 target_link_libraries(ncmpclone -lmenu -lpanel ${CURSES_LIBRARIES})
 target_link_libraries(ncmpclone mpdclient)

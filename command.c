@@ -22,7 +22,10 @@
  ***************************************************************************/
 
 #include "command.h"
+#include "ncmpclone_ncurses.h"
 #include <ncurses.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define KEY_RETURN 10 /* KEY_ENTER in ncurses doesn't seem to be working */
 
@@ -30,7 +33,6 @@ static command_def_t cmds[] = {
 
         {CMD_NONE, {0, 0, 0}, "None", "Null command"},
 
-        /* Player commands */
         {CMD_PLAY, {KEY_RETURN, 0, 0,},"Play",
         "Play the currently selected item"},
 
@@ -55,7 +57,6 @@ static command_def_t cmds[] = {
         {CMD_VOL_DOWN, {'-', KEY_LEFT, 0}, "Volume down",
         "Decrease volume"},
 
-        /* List window commands */
         {CMD_LIST_MOVE_UP, {'k', KEY_UP, 0}, "Move up",
         "Move cursor up"},
 
@@ -68,7 +69,6 @@ static command_def_t cmds[] = {
         {CMD_LIST_PAGE_DOWN, {KEY_NPAGE, 0, 0}, "Page down",
         "Page down"},
 
-        /* Screen commands */
         {CMD_SCREEN_HELP, {'1', KEY_F(1), 'h'}, "Help",
         "Display the help screen"},
 
@@ -92,4 +92,32 @@ command_t find_key_command(int key)
     }
 
     return CMD_NONE;
+}
+
+char *get_command_keys(command_t cmd)
+{
+    int *keys = cmds[cmd].keys;
+    int buf_size = 20;
+    char *buffer = calloc(buf_size, sizeof(char));
+
+    if (buffer == NULL)
+        return "";
+
+    strcpy(buffer, key_to_str(keys[0]));
+
+    if (keys[1] != 0) {
+        strcat(buffer, " ");
+        strcat(buffer, key_to_str(keys[1]));
+    }
+    if (keys[2] != 0) {
+        strcat(buffer, " ");
+        strcat(buffer, key_to_str(keys[2]));
+    }
+
+    return buffer;
+}
+
+char *get_command_desc(command_t cmd)
+{
+    return cmds[cmd].description;
 }

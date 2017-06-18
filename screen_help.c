@@ -23,6 +23,33 @@
 
 #include "screen_help.h"
 #include <stdlib.h>
+#include <string.h>
+
+#define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
+
+static command_t movement_cmds[] = {
+        CMD_LIST_MOVE_UP,
+        CMD_LIST_MOVE_DOWN,
+        CMD_LIST_PAGE_UP,
+        CMD_LIST_PAGE_DOWN,
+        CMD_SCREEN_HELP,
+        CMD_SCREEN_QUEUE
+};
+
+static command_t global_cmds[] = {
+        CMD_PAUSE,
+        CMD_STOP,
+        CMD_NEXT_SONG,
+        CMD_PREV_SONG,
+        CMD_RANDOM,
+        CMD_VOL_UP,
+        CMD_VOL_DOWN,
+        CMD_QUIT
+};
+
+static command_t queue_screen_cmds[] = {
+        CMD_PLAY
+};
 
 struct screen_help *screen_help_init()
 {
@@ -38,10 +65,46 @@ void screen_help_free(struct screen_help *screen)
 
 void screen_help_draw(struct screen_help *screen)
 {
-    // For now we'll just print "Hello World" to make sure
-    // we can switch between screens
+    int y = 0;
 
-    int x, y;
-    getmaxyx(screen->win, y, x);
-    mvwaddstr(screen->win, y / 2, x / 2, "Hello World!");
+    screen_help_draw_header(screen, y++, "Movement");
+    for (int i = 0; i < NELEMS(movement_cmds); ++i)
+        screen_help_draw_command(screen, ++y, movement_cmds[i]);
+
+    y += 2;
+    screen_help_draw_header(screen, y++, "Global");
+    for (int i = 0; i < NELEMS(global_cmds); ++i)
+        screen_help_draw_command(screen, ++y, global_cmds[i]);
+
+    y+= 2;
+    screen_help_draw_header(screen, y++, "Queue screen");
+    for (int i = 0; i < NELEMS(queue_screen_cmds); ++i)
+        screen_help_draw_command(screen, ++y, queue_screen_cmds[i]);
+}
+
+void screen_help_draw_header(struct screen_help *screen, const int begin_y, char *title)
+{
+    const int name_begin_x = 6;
+    const int line_begin_x = 3;
+
+    wattr_on(screen->win, A_BOLD, NULL);
+    mvwaddstr(screen->win, begin_y, name_begin_x, title);
+    wattr_off(screen->win, A_BOLD, NULL);
+
+    wmove(screen->win, begin_y+1, line_begin_x);
+    for (int i = line_begin_x; i < COLS - line_begin_x; ++i)
+        waddch(screen->win, '-');
+}
+
+void screen_help_draw_command(struct screen_help *screen, const int begin_y, command_t cmd)
+{
+    const int colon_x_pos = 21;
+    char *cmd_keys = get_command_keys(cmd);
+    char *desc = get_command_desc(cmd);
+
+    wmove(screen->win, begin_y, colon_x_pos - strlen(cmd_keys) - 1);
+    waddstr(screen->win, cmd_keys);
+    waddstr(screen->win, " : ");
+    waddstr(screen->win, desc);
+    free(cmd_keys);
 }

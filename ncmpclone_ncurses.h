@@ -1,5 +1,5 @@
 /******************************************************************************
- * screen_help.h : screen for displaying application controls
+ * ncmpclone_ncurses.h : basic functions for interacting with ncurses
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *
@@ -21,20 +21,9 @@
  * along with ncmpclone.  If not, see <http://www.gnu.org/licenses/>.
  ***************************************************************************/
 
-#ifndef NCMPCLONE_SCREEN_HELP_H
-#define NCMPCLONE_SCREEN_HELP_H
+#ifndef NCMPCLONE_NCMPCLONE_NCURSES_H
+#define NCMPCLONE_NCMPCLONE_NCURSES_H
 
-#include "command.h"
-#include <ncurses.h>
+char *key_to_str(int key);
 
-struct screen_help {
-    WINDOW *win;
-};
-
-struct screen_help *screen_help_init();
-void screen_help_free(struct screen_help *screen);
-void screen_help_draw(struct screen_help *screen);
-void screen_help_draw_header(struct screen_help *screen, const int begin_y, char *title);
-void screen_help_draw_command(struct screen_help *screen, const int begin_y, command_t cmd);
-
-#endif //NCMPCLONE_SCREEN_HELP_H
+#endif //NCMPCLONE_NCMPCLONE_NCURSES_H
