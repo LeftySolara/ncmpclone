@@ -57,9 +57,11 @@ void screen_cmd(command_t cmd, enum main_screen *visible_screen,
 int main(int argc, char *argv[])
 {
     mpd_setup(argv[1], argv[2], argv[3]);
-    ncurses_init();
+    mpd_connection_info_update(mpd_info);
+    mpd_connection_info_get_queue(mpd_info);
 
     /* Initialize the UI */
+    ncurses_init();
     struct title_bar *title_bar = title_bar_init(screen_titles[QUEUE]);
     struct status_bar *status_bar = status_bar_init();
     struct screen_help *screen_help = screen_help_init();
@@ -77,8 +79,6 @@ int main(int argc, char *argv[])
     update_panels();
     doupdate();
 
-    mpd_connection_info_update(mpd_info);
-    mpd_connection_info_get_queue(mpd_info);
     title_bar_update_volume(title_bar);
     screen_queue_populate_list(screen_queue);
 
@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
 
         switch(visible_screen) {
             case QUEUE:
+                screen_queue_update(screen_queue);
                 screen_queue_cmd(cmd, screen_queue);
                 break;
         }

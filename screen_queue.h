@@ -32,12 +32,14 @@
 
 struct screen_queue {
     struct list *list;
+    unsigned int queue_version;
 };
 
 struct screen_queue *screen_queue_init();
 void screen_queue_free(struct screen_queue *screen_queue);
 
 void screen_queue_populate_list(struct screen_queue *screen_queue);
+void screen_queue_update(struct screen_queue *screen_queue);
 char *create_track_label(struct mpd_song *song);
 char *create_duration_label(struct mpd_song *song);
 
@@ -51,6 +53,10 @@ static inline void screen_queue_move_cursor(struct screen_queue *screen_queue, e
 
 static inline void screen_queue_scroll_page(struct screen_queue *screen_queue, enum direction direction) {
     list_scroll_page(screen_queue->list, direction);
+}
+
+static inline void screen_queue_clear(struct screen_queue *screen_queue) {
+    list_clear(screen_queue->list);
 }
 
 void screen_queue_cmd(command_t cmd, struct screen_queue *screen);

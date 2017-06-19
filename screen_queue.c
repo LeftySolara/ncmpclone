@@ -30,6 +30,7 @@ struct screen_queue *screen_queue_init()
 {
     struct screen_queue *screen_queue = malloc(sizeof(*screen_queue));
     screen_queue->list = list_init();
+    screen_queue->queue_version = mpd_status_get_queue_version(mpd_info->status);
 
     return screen_queue;
 }
@@ -54,6 +55,23 @@ void screen_queue_populate_list(struct screen_queue *screen_queue)
                          create_track_label(song),
                          create_duration_label(song));
     }
+    screen_queue->queue_version = mpd_status_get_queue_version(mpd_info->status);
+}
+
+void screen_queue_update(struct screen_queue *screen_queue)
+{
+    if (screen_queue->queue_version == mpd_status_get_queue_version(mpd_info->status))
+        return;
+
+    int idx_selected = screen_queue->list->selected_index;
+    screen_queue_clear(screen_queue);
+    screen_queue_populate_list(screen_queue);
+
+    for (int i = 0; i < idx_selected; ++i)
+        screen_queue_move_cursor(screen_queue, DOWN);
+    screen_queue->list->selected_index = idx_selected;
+
+    screen_queue_draw(screen_queue);
 }
 
 /* Create a song label of the format "artist - title" */
@@ -96,22 +114,21 @@ void screen_queue_cmd(command_t cmd, struct screen_queue *screen)
 {
     switch (cmd) {
         case CMD_LIST_MOVE_UP:
-            list_move_cursor(screen->list, UP);
+            screen_queue_move_cursor(screen, UP);
             break;
         case CMD_LIST_MOVE_DOWN:
-            list_move_cursor(screen->list, DOWN);
+            screen_queue_move_cursor(screen, DOWN);
             break;
         case CMD_LIST_PAGE_UP:
-            list_scroll_page(screen->list, UP);
+            screen_queue_scroll_page(screen, UP);
             break;
         case CMD_LIST_PAGE_DOWN:
-            list_scroll_page(screen->list, DOWN);
+            screen_queue_scroll_page(screen, DOWN);
             break;
         case CMD_PLAY:
             mpd_run_play_pos(mpd_info->connection, screen->list->selected_index);
             break;
         case CMD_CLEAR_QUEUE:
-            list_clear(screen->list);
             mpd_run_clear(mpd_info->connection);
             break;
     }
