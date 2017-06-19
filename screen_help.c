@@ -48,7 +48,8 @@ static command_t global_cmds[] = {
 };
 
 static command_t queue_screen_cmds[] = {
-        CMD_PLAY
+        CMD_PLAY,
+        CMD_CLEAR_QUEUE
 };
 
 struct screen_help *screen_help_init()

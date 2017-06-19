@@ -43,15 +43,16 @@ void screen_queue_free(struct screen_queue *screen_queue)
 
 void screen_queue_populate_list(struct screen_queue *screen_queue)
 {
-    if (!mpd_info->queue_head)
+    if (!mpd_info->connection)
         return;
 
-    struct queue_song *queue_song = mpd_info->queue_head;
-    while (queue_song) {
+    struct mpd_song *song;
+    mpd_send_list_queue_meta(mpd_info->connection);
+
+    while ((song = mpd_recv_song(mpd_info->connection))) {
         list_append_item(screen_queue->list,
-                         create_track_label(queue_song->song),
-                         create_duration_label(queue_song->song));
-        queue_song = queue_song->next;
+                         create_track_label(song),
+                         create_duration_label(song));
     }
 }
 
@@ -108,6 +109,10 @@ void screen_queue_cmd(command_t cmd, struct screen_queue *screen)
             break;
         case CMD_PLAY:
             mpd_run_play_pos(mpd_info->connection, screen->list->selected_index);
+            break;
+        case CMD_CLEAR_QUEUE:
+            list_clear(screen->list);
+            mpd_run_clear(mpd_info->connection);
             break;
     }
 }

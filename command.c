@@ -69,6 +69,9 @@ static command_def_t cmds[] = {
         {CMD_LIST_PAGE_DOWN, {KEY_NPAGE, 0, 0}, "Page down",
         "Page down"},
 
+        {CMD_CLEAR_QUEUE, {'c', 0, 0}, "Clear Queue",
+        "Clear queue"},
+
         {CMD_SCREEN_HELP, {'1', KEY_F(1), 'h'}, "Help",
         "Help screen"},
 

@@ -55,6 +55,7 @@ void list_free(struct list *list);
 
 void list_append_item(struct list *list, char *left, char *right);
 void list_remove_selected(struct list *list);
+void list_clear(struct list *list);
 
 void list_draw_item(struct list *list, struct list_item *item, int begin_y);
 void list_draw(struct list *list);

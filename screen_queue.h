@@ -46,7 +46,7 @@ static inline void screen_queue_draw(struct screen_queue *screen_queue) {
 }
 
 static inline void screen_queue_move_cursor(struct screen_queue *screen_queue, enum direction direction) {
-        list_move_cursor(screen_queue->list, direction);
+    list_move_cursor(screen_queue->list, direction);
 }
 
 static inline void screen_queue_scroll_page(struct screen_queue *screen_queue, enum direction direction) {

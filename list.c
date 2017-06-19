@@ -67,20 +67,7 @@ struct list *list_init()
 
 void list_free(struct list *list)
 {
-    struct list_item *current = list->head;
-    while (list->head) {
-        list->head = current->next;
-        list_item_free(current);
-        current = list->head;
-    }
-
-    if (list->selected)
-        list->selected = NULL;
-    if (list->top_visible)
-        list->top_visible = NULL;
-    if (list->bottom_visible)
-        list->bottom_visible = NULL;
-
+    list_clear(list);
     delwin(list->win);
     free(list);
 }
@@ -143,6 +130,25 @@ void list_remove_selected(struct list *list)
     }
 }
 
+void list_clear(struct list *list)
+{
+    struct list_item *current = list->head;
+    while (list->head) {
+        list->head = current->next;
+        list_item_free(current);
+        current = list->head;
+    }
+
+    if (list->selected)
+        list->selected = NULL;
+    if (list->top_visible)
+        list->top_visible = NULL;
+    if (list->bottom_visible)
+        list->bottom_visible = NULL;
+
+    list_draw(list);
+}
+
 void list_draw_item(struct list *list, struct list_item *item, int begin_y)
 {
     // Can't draw past the end of the window
@@ -168,6 +174,7 @@ void list_draw_item(struct list *list, struct list_item *item, int begin_y)
 
 void list_draw(struct list *list)
 {
+    wclear(list->win);
     struct list_item *current = list->top_visible;
     list_find_bottom_visible(list);
 
