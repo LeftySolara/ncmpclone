@@ -63,8 +63,7 @@ void title_bar_draw(struct title_bar *title_bar)
               title_bar->volume_label);
 
     wmove(title_bar->win, 1, 0);
-    for (int i = 0; i < title_bar->width; ++i)
-        waddch(title_bar->win, ACS_HLINE);
+    whline(title_bar->win, ACS_HLINE, title_bar->width);
 
     if (mpd_status_get_random(mpd_info->status))
         mvwaddstr(title_bar->win, 1, COLS - strlen("[z]") - 1, "[z]");
