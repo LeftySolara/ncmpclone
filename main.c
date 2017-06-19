@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 {
     mpd_setup(argv[1], argv[2], argv[3]);
     mpd_connection_info_update(mpd_info);
-    mpd_connection_info_get_queue(mpd_info);
 
     /* Initialize the UI */
     ncurses_init();
