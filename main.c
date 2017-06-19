@@ -51,6 +51,7 @@ char *screen_titles[] = {
 
 void ncurses_init();
 void mpd_setup(char *host, char *port, char *timeout);
+void global_cmd(command_t cmd);
 void screen_cmd(command_t cmd, enum main_screen *visible_screen,
                 PANEL **panels, struct title_bar *title_bar);
 
@@ -109,6 +110,7 @@ int main(int argc, char *argv[])
                 screen_queue_cmd(cmd, screen_queue);
                 break;
         }
+        global_cmd(cmd);
         player_cmd(cmd, status_bar);
         screen_cmd(cmd, &visible_screen, screen_panels, title_bar);
 
@@ -153,6 +155,21 @@ void mpd_setup(char *host, char *port, char *timeout)
         printf("%s\n", mpd_connection_get_error_message(mpd_info->connection));
         mpd_connection_info_free(mpd_info);
         exit(mpd_err);
+    }
+}
+
+void global_cmd(command_t cmd)
+{
+    switch(cmd) {
+        case CMD_CROP:
+            if (mpd_status_get_state(mpd_info->status) != MPD_STATE_PLAY)
+                break;
+            if (mpd_status_get_queue_length(mpd_info->status) <= 1)
+                break;
+            int current_song_pos = mpd_song_get_pos(mpd_info->current_song);
+            mpd_run_delete_range(mpd_info->connection, 0, current_song_pos);
+            mpd_run_delete_range(mpd_info->connection, 1, (unsigned)-1);
+            break;
     }
 }
 

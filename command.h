@@ -34,6 +34,7 @@ typedef enum {
     CMD_NEXT_SONG,
     CMD_PREV_SONG,
     CMD_RANDOM,
+    CMD_CROP,
     CMD_VOL_UP,
     CMD_VOL_DOWN,
     CMD_LIST_MOVE_UP,

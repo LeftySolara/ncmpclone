@@ -51,6 +51,9 @@ static command_def_t cmds[] = {
         {CMD_RANDOM, {'z', 0, 0}, "Random",
         "Toggle random mode"},
 
+        {CMD_CROP, {'o', 0, 0}, "Crop",
+        "Crop"},
+
         {CMD_VOL_UP, {'+', KEY_RIGHT, 0}, "Volume Up",
         "Increase volume"},
 
