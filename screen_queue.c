@@ -31,6 +31,8 @@ struct screen_queue *screen_queue_init()
     struct screen_queue *screen_queue = malloc(sizeof(*screen_queue));
     screen_queue->list = list_init();
     screen_queue->queue_version = mpd_status_get_queue_version(mpd_info->status);
+    screen_queue->current_song_pos = -1;
+    screen_queue->last_state = MPD_STATE_UNKNOWN;
 
     return screen_queue;
 }
@@ -48,29 +50,57 @@ void screen_queue_populate_list(struct screen_queue *screen_queue)
         return;
 
     struct mpd_song *song;
+    bool bold;
     mpd_send_list_queue_meta(mpd_info->connection);
 
     while ((song = mpd_recv_song(mpd_info->connection))) {
+
+        bold = ((mpd_song_get_pos(song) == mpd_status_get_song_pos(mpd_info->status))
+               && mpd_status_get_state(mpd_info->status) != MPD_STATE_STOP) ?
+               true : false;
+
         list_append_item(screen_queue->list,
                          create_track_label(song),
-                         create_duration_label(song));
+                         create_duration_label(song),
+                         bold);
     }
     screen_queue->queue_version = mpd_status_get_queue_version(mpd_info->status);
 }
 
 void screen_queue_update(struct screen_queue *screen_queue)
 {
-    if (screen_queue->queue_version == mpd_status_get_queue_version(mpd_info->status))
+    /* If the queue or current song haven't changed, don't send queries */
+    if (screen_queue->queue_version == mpd_status_get_queue_version(mpd_info->status)
+            && screen_queue->current_song_pos == mpd_status_get_song_pos(mpd_info->status)
+            && screen_queue->last_state == mpd_status_get_state(mpd_info->status))
         return;
 
+    /* Store page scroll and cursor positions */
+    int idx_top_visible = 0;
+    struct list_item *current = screen_queue->list->head;
+    while (current && current->next && current != screen_queue->list->top_visible) {
+        current = current->next;
+        ++idx_top_visible;
+    }
     int idx_selected = screen_queue->list->selected_index;
+    screen_queue->current_song_pos = mpd_status_get_song_pos(mpd_info->status);
+
     screen_queue_clear(screen_queue);
     screen_queue_populate_list(screen_queue);
 
+    /* Restore page scroll position */
+    int i = 0;
+    current = screen_queue->list->head;
+    while (current && current->next && i++ < idx_top_visible)
+        current = current->next;
+    screen_queue->list->top_visible = current;
+
+    /* Restore cursor position */
     for (int i = 0; i < idx_selected; ++i)
         screen_queue_move_cursor(screen_queue, DOWN);
-    screen_queue->list->selected_index = idx_selected;
 
+    screen_queue->list->selected_index = idx_selected;
+    screen_queue->last_state = mpd_status_get_state(mpd_info->status);
     screen_queue_draw(screen_queue);
 }
 

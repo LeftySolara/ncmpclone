@@ -73,9 +73,9 @@ void list_free(struct list *list)
 }
 
 /* Add an item to the end of the list */
-void list_append_item(struct list *list, char *left, char *right)
+void list_append_item(struct list *list, char *left, char *right, bool bold)
 {
-    struct list_item *item = list_item_init(left, right, false, false);
+    struct list_item *item = list_item_init(left, right, bold, false);
 
     if (!list->head) {
         list->head = item;
@@ -151,7 +151,7 @@ void list_clear(struct list *list)
 
 void list_draw_item(struct list *list, struct list_item *item, int begin_y)
 {
-    // Can't draw past the end of the window
+    // Don't draw past the end of the window
     if (begin_y >= list->max_visible)
         return;
 
@@ -163,13 +163,18 @@ void list_draw_item(struct list *list, struct list_item *item, int begin_y)
 
     if (item->bold)
         wattr_on(list->win, A_BOLD, NULL);
+    if (item->highlight)
+        wattr_on(list->win, A_STANDOUT, NULL);
 
     mvwaddnstr(list->win, begin_y, 0, item->left_str, left_item_maxlen);
     mvwaddstr(list->win, begin_y, COLS - strlen(item->right_str), item->right_str);
 
+    int gap = COLS - strlen(item->left_str) - strlen(item->right_str);
     if (item->highlight)
-        mvwchgat(list->win, begin_y, 0, -1, A_STANDOUT, 0, NULL);
+        mvwchgat(list->win, begin_y, strlen(item->left_str), gap, A_STANDOUT, 0, NULL);
+
     wattr_off(list->win, A_BOLD, NULL);
+    wattr_off(list->win, A_STANDOUT, NULL);
 }
 
 void list_draw(struct list *list)

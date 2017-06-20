@@ -33,6 +33,8 @@
 struct screen_queue {
     struct list *list;
     unsigned int queue_version;
+    int current_song_pos;
+    enum mpd_state last_state;
 };
 
 struct screen_queue *screen_queue_init();

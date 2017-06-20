@@ -53,7 +53,7 @@ void list_item_free(struct list_item *item);
 struct list *list_init();
 void list_free(struct list *list);
 
-void list_append_item(struct list *list, char *left, char *right);
+void list_append_item(struct list *list, char *left, char *right, bool bold);
 void list_remove_selected(struct list *list);
 void list_clear(struct list *list);
 
