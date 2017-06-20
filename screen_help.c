@@ -38,6 +38,7 @@ static command_t movement_cmds[] = {
 
 static command_t global_cmds[] = {
         CMD_PAUSE,
+        CMD_CROP,
         CMD_STOP,
         CMD_NEXT_SONG,
         CMD_PREV_SONG,
