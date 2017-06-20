@@ -36,10 +36,20 @@ void player_cmd(command_t cmd, struct status_bar *status_bar)
             mpd_run_stop(mpd_info->connection);
             break;
         case CMD_NEXT_SONG:
-            mpd_run_next(mpd_info->connection);
+            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP) {
+                status_bar->notification = "Not playing";
+                status_bar->notify_end = time(NULL) + 3;
+            }
+            else
+                mpd_run_next(mpd_info->connection);
             break;
         case CMD_PREV_SONG:
-            mpd_run_previous(mpd_info->connection);
+            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP) {
+                status_bar->notification = "Not playing";
+                status_bar->notify_end = time(NULL) + 3;
+            }
+            else
+                mpd_run_previous(mpd_info->connection);
             break;
         case CMD_RANDOM:
             mpd_run_random(mpd_info->connection, !mpd_status_get_random(mpd_info->status));
