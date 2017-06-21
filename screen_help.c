@@ -45,6 +45,7 @@ static command_t global_cmds[] = {
         CMD_RANDOM,
         CMD_VOL_UP,
         CMD_VOL_DOWN,
+        CMD_SHUFFLE,
         CMD_QUIT
 };
 

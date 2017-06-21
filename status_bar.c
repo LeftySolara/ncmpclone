@@ -64,10 +64,6 @@ void status_bar_draw(struct status_bar *bar)
     wclear(bar->win);
     whline(bar->win, ACS_HLINE, getmaxx(bar->win));
 
-    if (mpd_info->current_song == NULL)
-        return;
-
-    status_bar_draw_progress(bar);
     if (bar->notification && time(NULL) <= bar->notify_end) {
         wattr_on(bar->win, A_BOLD, NULL);
         mvwaddstr(bar->win, 1, 0, bar->notification);
@@ -75,6 +71,10 @@ void status_bar_draw(struct status_bar *bar)
         return;
     }
 
+    if (mpd_info->current_song == NULL)
+        return;
+
+    status_bar_draw_progress(bar);
     char *track_label = create_song_label(mpd_info->current_song);
     int state = mpd_status_get_state(mpd_info->status);
     char *state_label;
