@@ -100,6 +100,13 @@ void status_bar_draw(struct status_bar *bar)
     free(track_label);
 }
 
+void status_bar_show_notification(struct status_bar *status_bar, char *notification,
+                                  int duration)
+{
+    status_bar->notification = notification;
+    status_bar->notify_end = time(NULL) + duration;
+}
+
 // TODO: Move this function to a shared header (currently a copy-paste job)
 /* Create a song label of the format "artist - title" */
 char *create_song_label(struct mpd_song *song)

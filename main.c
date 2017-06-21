@@ -174,8 +174,7 @@ void global_cmd(command_t cmd, struct status_bar *status_bar)
             if (mpd_status_get_queue_length(mpd_info->status) == 0)
                 break;
             mpd_run_shuffle(mpd_info->connection);
-            status_bar->notification = "Shuffled queue";
-            status_bar->notify_end = time(NULL) + 3;
+            status_bar_show_notification(status_bar, "Shuffled queue", 3);
             break;
     }
 }
