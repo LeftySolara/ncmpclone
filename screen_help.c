@@ -27,11 +27,14 @@
 
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 
+
+/* We'll use CMD_NONE to print a blank line */
 static command_t movement_cmds[] = {
         CMD_LIST_MOVE_UP,
         CMD_LIST_MOVE_DOWN,
         CMD_LIST_PAGE_UP,
         CMD_LIST_PAGE_DOWN,
+        CMD_NONE,
         CMD_SCREEN_HELP,
         CMD_SCREEN_QUEUE
 };
@@ -45,6 +48,7 @@ static command_t global_cmds[] = {
         CMD_RANDOM,
         CMD_VOL_UP,
         CMD_VOL_DOWN,
+        CMD_NONE,
         CMD_QUIT
 };
 
@@ -100,6 +104,8 @@ void screen_help_draw_header(struct screen_help *screen, const int begin_y, char
 
 void screen_help_draw_command(struct screen_help *screen, const int begin_y, command_t cmd)
 {
+    if (cmd == CMD_NONE)
+        return;
     const int colon_x_pos = 21;
     char *cmd_keys = get_command_keys(cmd);
     char *desc = get_command_desc(cmd);
