@@ -36,26 +36,23 @@ void player_cmd(command_t cmd, struct status_bar *status_bar)
             mpd_run_stop(mpd_info->connection);
             break;
         case CMD_NEXT_SONG:
-            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP) {
-                status_bar->notification = "Not playing";
-                status_bar->notify_end = time(NULL) + 3;
-            }
+            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP)
+                status_bar_show_notification(status_bar, "Not playing", 3);
             else
                 mpd_run_next(mpd_info->connection);
             break;
         case CMD_PREV_SONG:
-            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP) {
-                status_bar->notification = "Not playing";
-                status_bar->notify_end = time(NULL) + 3;
-            }
+            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_STOP)
+                status_bar_show_notification(status_bar, "Not playing", 3);
             else
                 mpd_run_previous(mpd_info->connection);
             break;
         case CMD_RANDOM:
             mpd_run_random(mpd_info->connection, !mpd_status_get_random(mpd_info->status));
-            status_bar->notification = !mpd_status_get_random(mpd_info->status) ?
+            char *notification;
+            notification = !mpd_status_get_random(mpd_info->status) ?
                                        "Random mode is on" : "Random mode is off";
-            status_bar->notify_end = time(NULL) + 3;
+            status_bar_show_notification(status_bar, notification, 3);
             break;
         case CMD_VOL_UP:
             mpd_run_change_volume(mpd_info->connection, 1);

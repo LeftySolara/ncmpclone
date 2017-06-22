@@ -39,6 +39,9 @@ struct status_bar *status_bar_init();
 void status_bar_free(struct status_bar *bar);
 void status_bar_draw_progress(struct status_bar *bar);
 void status_bar_draw(struct status_bar *bar);
+void status_bar_show_notification(struct status_bar *bar, char *notification,
+                                  int duration);
+
 char *create_song_label(struct mpd_song *song);
 char *create_progress_label(char *buffer);
 

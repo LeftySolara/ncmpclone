@@ -51,6 +51,9 @@ static command_def_t cmds[] = {
         {CMD_RANDOM, {'z', 0, 0}, "Random",
         "Toggle random mode"},
 
+        {CMD_SHUFFLE, {'Z', 0, 0}, "Shuffle",
+        "Shuffle queue"},
+
         {CMD_CROP, {'o', 0, 0}, "Crop",
         "Crop"},
 
