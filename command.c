@@ -66,6 +66,15 @@ static command_def_t cmds[] = {
         {CMD_LIST_MOVE_DOWN, {'j', KEY_DOWN, 0}, "Move down",
         "Move cursor down"},
 
+        {CMD_LIST_MOVE_TOP, {'H', 0, 0}, "Move to top",
+        "Move cursor to the top of the screen"},
+
+        {CMD_LIST_MOVE_MID, {'M', 0, 0}, "Move to middle",
+        "Move cursor to the middle of the screen"},
+
+        {CMD_LIST_MOVE_BOTTOM, {'L', 0, 0}, "Move to bottom",
+        "Move cursor to the bottom of the screen"},
+
         {CMD_LIST_PAGE_UP, {KEY_PPAGE, 0, 0}, "Page up",
         "Page up"},
 

@@ -190,7 +190,7 @@ void list_draw(struct list *list)
     }
 }
 
-void list_move_cursor(struct list *list, enum direction direction)
+void list_move_direction(struct list *list, enum direction direction)
 {
     struct list_item *current = list->selected;
     list_find_bottom_visible(list);
@@ -231,13 +231,35 @@ void list_move_cursor(struct list *list, enum direction direction)
      list_draw(list);
 }
 
+void list_move_to_screen_pos(struct list *list, enum screen_pos pos)
+{
+    if (!list->head)
+        return;
+
+    if (pos == TOP) {
+        while (list->selected != list->top_visible)
+            list_move_direction(list, UP);
+    }
+    else if (pos == BOT) {
+        while (list->selected != list->bottom_visible)
+            list_move_direction(list, DOWN);
+    }
+    else if (pos == MID) {
+        int midpoint = getmaxy(list->win) / 2;
+        list_move_to_screen_pos(list, TOP);
+
+        for (int i = 0; i < midpoint; ++i)
+            list_move_direction(list, DOWN);
+    }
+}
+
 void list_scroll_page(struct list *list, enum direction direction)
 {
     if (list->selected == NULL)
        return;
 
     for (int i = 0; i < list->max_visible - 1; ++i)
-        list_move_cursor(list, direction);
+        list_move_direction(list, direction);
 
     list_draw(list);
 }

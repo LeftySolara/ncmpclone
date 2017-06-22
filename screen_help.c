@@ -32,6 +32,9 @@
 static command_t movement_cmds[] = {
         CMD_LIST_MOVE_UP,
         CMD_LIST_MOVE_DOWN,
+        CMD_LIST_MOVE_TOP,
+        CMD_LIST_MOVE_MID,
+        CMD_LIST_MOVE_BOTTOM,
         CMD_LIST_PAGE_UP,
         CMD_LIST_PAGE_DOWN,
         CMD_NONE,
