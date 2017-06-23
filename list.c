@@ -231,6 +231,23 @@ void list_move_direction(struct list *list, enum direction direction)
      list_draw(list);
 }
 
+/* Move the cursor to the top or bottom of the list */
+void list_move_to_pos(struct list *list, enum screen_pos pos)
+{
+    if (!list->head || pos == MID)
+        return;
+
+    if (pos == TOP) {
+        while (list->selected != list->head)
+            list_move_direction(list, UP);
+    }
+    else if (pos == BOT) {
+        while (list->selected->next)
+            list_move_direction(list, DOWN);
+    }
+}
+
+/* Move the cursor to the top, middle or bottom of the currently visible items */
 void list_move_to_screen_pos(struct list *list, enum screen_pos pos)
 {
     if (!list->head)

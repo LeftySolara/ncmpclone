@@ -54,6 +54,10 @@ static inline void screen_queue_move_cursor(struct screen_queue *screen_queue, e
 }
 
 static inline void screen_queue_move_pos(struct screen_queue *screen_queue, enum screen_pos pos) {
+    list_move_to_pos(screen_queue->list, pos);
+}
+
+static inline void screen_queue_move_screen_pos(struct screen_queue *screen_queue, enum screen_pos pos) {
     list_move_to_screen_pos(screen_queue->list, pos);
 }
 

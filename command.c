@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define KEY_CTRL(x) ((x) & 0x1f)
 #define KEY_RETURN 10 /* KEY_ENTER in ncurses doesn't seem to be working */
 
 static command_def_t cmds[] = {
@@ -68,6 +69,12 @@ static command_def_t cmds[] = {
 
         {CMD_LIST_MOVE_DOWN, {'j', KEY_DOWN, 0}, "Move down",
         "Move cursor down"},
+
+        {CMD_LIST_MOVE_TOP, {KEY_HOME, KEY_CTRL('a'), 0}, "Move to list top",
+        "Move cursor to the top of the list"},
+
+        {CMD_LIST_MOVE_BOTTOM, {KEY_END, KEY_CTRL('e'), 0}, "Move to list bottom",
+        "Move cursor to the bottom of the list"},
 
         {CMD_LIST_MOVE_SCREEN_TOP, {'H', 0, 0}, "Move to top",
         "Move cursor to the top of the screen"},

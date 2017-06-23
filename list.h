@@ -62,6 +62,7 @@ void list_draw_item(struct list *list, struct list_item *item, int begin_y);
 void list_draw(struct list *list);
 
 void list_move_direction(struct list *list, enum direction direction);
+void list_move_to_pos(struct list *list, enum screen_pos pos);
 void list_move_to_screen_pos(struct list *list, enum screen_pos pos);
 void list_scroll_page(struct list *list, enum direction direction);
 

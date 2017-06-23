@@ -22,8 +22,10 @@
  ***************************************************************************/
 
 #include "ncmpclone_ncurses.h"
+#include <stdlib.h>
 #include <ncurses.h>
 
+#define KEY_CTRL(x) ((x) & 0x1f)
 #define KEY_RETURN 10
 
 char *key_to_str(int key)
@@ -56,6 +58,12 @@ char *key_to_str(int key)
             break;
         case KEY_NPAGE:
             str = "PageDown";
+            break;
+        case KEY_HOME:
+            str = "Home";
+            break;
+        case KEY_END:
+            str = "End";
             break;
         case KEY_F(1):
             str = "F1";
@@ -94,7 +102,12 @@ char *key_to_str(int key)
             str = "F12";
             break;
         default:
-            str = (char *)&key;
+            if (!(key & ~0x1f)) {
+                str = calloc(7, sizeof(char));
+                snprintf(str, 7, "Ctrl-%c", 'A' + (key & 0x1f) - 1);
+            }
+            else
+                str = (char *)&key;
     }
     return str;
 }

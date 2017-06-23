@@ -149,14 +149,20 @@ void screen_queue_cmd(command_t cmd, struct screen_queue *screen)
         case CMD_LIST_MOVE_DOWN:
             screen_queue_move_cursor(screen, DOWN);
             break;
-        case CMD_LIST_MOVE_SCREEN_TOP:
+        case CMD_LIST_MOVE_TOP:
             screen_queue_move_pos(screen, TOP);
             break;
+        case CMD_LIST_MOVE_BOTTOM:
+            screen_queue_move_pos(screen, BOT);
+            break;
+        case CMD_LIST_MOVE_SCREEN_TOP:
+            screen_queue_move_screen_pos(screen, TOP);
+            break;
         case CMD_LIST_MOVE_SCREEN_MID:
-            screen_queue_move_pos(screen, MID);
+            screen_queue_move_screen_pos(screen, MID);
             break;
         case CMD_LIST_MOVE_SCREEN_BOTTOM:
-            screen_queue_move_pos(screen, BOT);
+            screen_queue_move_screen_pos(screen, BOT);
             break;
         case CMD_LIST_PAGE_UP:
             screen_queue_scroll_page(screen, UP);
