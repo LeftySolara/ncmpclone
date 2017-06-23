@@ -64,6 +64,7 @@ void list_draw(struct list *list);
 void list_move_direction(struct list *list, enum direction direction);
 void list_move_to_pos(struct list *list, enum screen_pos pos);
 void list_move_to_screen_pos(struct list *list, enum screen_pos pos);
+void list_scroll_line(struct list *list, enum direction direction);
 void list_scroll_page(struct list *list, enum direction direction);
 
 void list_find_bottom_visible(struct list *list);

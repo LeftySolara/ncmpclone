@@ -85,6 +85,12 @@ static command_def_t cmds[] = {
         {CMD_LIST_MOVE_SCREEN_BOTTOM, {'L', 0, 0}, "Move to bottom",
         "Move cursor to the bottom of the screen"},
 
+        {CMD_LIST_SCROLL_LINE_UP, {KEY_CTRL('b'), 0, 0}, "Scroll line up",
+        "Scroll up one line"},
+
+        {CMD_LIST_SCROLL_LINE_DOWN, {KEY_CTRL('n'), 0, 0}, "Scroll line down",
+        "Scroll down one line"},
+
         {CMD_LIST_PAGE_UP, {KEY_PPAGE, 0, 0}, "Page up",
         "Page up"},
 

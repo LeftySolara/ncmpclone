@@ -39,6 +39,8 @@ static command_t movement_cmds[] = {
         CMD_LIST_PAGE_DOWN,
         CMD_LIST_MOVE_TOP,
         CMD_LIST_MOVE_BOTTOM,
+        CMD_LIST_SCROLL_LINE_UP,
+        CMD_LIST_SCROLL_LINE_DOWN,
         CMD_NONE,
         CMD_SCREEN_HELP,
         CMD_SCREEN_QUEUE

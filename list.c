@@ -270,6 +270,28 @@ void list_move_to_screen_pos(struct list *list, enum screen_pos pos)
     }
 }
 
+/* Scroll the list by one line. The currently selected item does not change
+ * unless it moves off-screen*/
+void list_scroll_line(struct list *list, enum direction direction)
+{
+    if (!list->head)
+        return;
+
+    list_find_bottom_visible(list);
+
+    if (direction == UP && list->selected == list->bottom_visible)
+        list_move_direction(list, UP);
+    else if (direction == DOWN && list->selected == list->top_visible)
+        list_move_direction(list, DOWN);
+
+    if (direction == UP && list->top_visible->prev)
+        list->top_visible = list->top_visible->prev;
+    else if (direction == DOWN && list->bottom_visible->next)
+        list->top_visible = list->top_visible->next;
+
+    list_draw(list);
+}
+
 void list_scroll_page(struct list *list, enum direction direction)
 {
     if (list->selected == NULL)

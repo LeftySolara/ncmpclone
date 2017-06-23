@@ -61,6 +61,10 @@ static inline void screen_queue_move_screen_pos(struct screen_queue *screen_queu
     list_move_to_screen_pos(screen_queue->list, pos);
 }
 
+static inline void screen_queue_scroll_line(struct screen_queue *screen_queue, enum direction direction) {
+    list_scroll_line(screen_queue->list, direction);
+}
+
 static inline void screen_queue_scroll_page(struct screen_queue *screen_queue, enum direction direction) {
     list_scroll_page(screen_queue->list, direction);
 }
