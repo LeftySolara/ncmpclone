@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(ncmpclone)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 # ncurses stuff
 set(CURSES_USE_NCURSES TRUE)
