@@ -311,6 +311,13 @@ void list_scroll_page(struct list *list, enum direction direction)
     list_draw(list);
 }
 
+void list_scroll_half_page(struct list *list, enum direction direction)
+{
+    int lines = list->max_visible / 2;
+    for (int i = 0; i < lines; ++i)
+        list_scroll_line(list, direction);
+}
+
 void list_find_bottom_visible(struct list *list)
 {
     if (!list->head) {

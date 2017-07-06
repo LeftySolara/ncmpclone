@@ -170,6 +170,12 @@ void screen_queue_cmd(command_t cmd, struct screen_queue *screen, struct status_
         case CMD_LIST_SCROLL_LINE_DOWN:
             screen_queue_scroll_line(screen, DOWN);
             break;
+        case CMD_LIST_SCROLL_HALF_UP:
+            screen_queue_scroll_half_page(screen, UP);
+            break;
+        case CMD_LIST_SCROLL_HALF_DOWN:
+            screen_queue_scroll_half_page(screen, DOWN);
+            break;
         case CMD_LIST_PAGE_UP:
             screen_queue_scroll_page(screen, UP);
             break;

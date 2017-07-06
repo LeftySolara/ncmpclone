@@ -91,6 +91,12 @@ static command_def_t cmds[] = {
         {CMD_LIST_SCROLL_LINE_DOWN, {KEY_CTRL('n'), 0, 0}, "Scroll line down",
         "Scroll down one line"},
 
+        {CMD_LIST_SCROLL_HALF_UP, {'N', 0, 0}, "Scroll up half a screen",
+        "Scroll up half a screen"},
+
+        {CMD_LIST_SCROLL_HALF_DOWN, {'B', 0, 0}, "Scroll down half a screen",
+        "Scroll down half a screen"},
+
         {CMD_LIST_PAGE_UP, {KEY_PPAGE, 0, 0}, "Page up",
         "Page up"},
 

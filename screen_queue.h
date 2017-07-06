@@ -74,6 +74,10 @@ static inline void screen_queue_clear(struct screen_queue *screen_queue) {
     list_clear(screen_queue->list);
 }
 
+static inline void screen_queue_scroll_half_page(struct screen_queue *screen_queue, enum direction direction) {
+    list_scroll_half_page(screen_queue->list, direction);
+}
+
 void screen_queue_cmd(command_t cmd, struct screen_queue *screen, struct status_bar *status_bar);
 
 

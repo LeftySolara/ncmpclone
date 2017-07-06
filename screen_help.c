@@ -42,6 +42,8 @@ static command_t movement_cmds[] = {
         CMD_LIST_TOGGLE_RANGE_SELECT,
         CMD_LIST_SCROLL_LINE_UP,
         CMD_LIST_SCROLL_LINE_DOWN,
+        CMD_LIST_SCROLL_HALF_DOWN,
+        CMD_LIST_SCROLL_HALF_UP,
         CMD_NONE,
         CMD_SCREEN_HELP,
         CMD_SCREEN_QUEUE
