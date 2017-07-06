@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
         switch(visible_screen) {
             case QUEUE:
                 screen_queue_update(screen_queue);
-                screen_queue_cmd(cmd, screen_queue);
+                screen_queue_cmd(cmd, screen_queue, status_bar);
                 break;
         }
         global_cmd(cmd, status_bar);

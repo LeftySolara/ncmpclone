@@ -40,12 +40,17 @@ struct list_item {
 
 struct list {
     WINDOW *win;
+
     int max_visible;
     unsigned int selected_index;
     struct list_item *head;
     struct list_item *selected;
     struct list_item *top_visible;
     struct list_item *bottom_visible;
+
+    bool range_select;
+    int range_head_index;
+    struct list_item *range_head;
 };
 
 struct list_item *list_item_init(char *left, char *right, bool bold, bool highlight);
@@ -68,5 +73,6 @@ void list_scroll_line(struct list *list, enum direction direction);
 void list_scroll_page(struct list *list, enum direction direction);
 
 void list_find_bottom_visible(struct list *list);
+void list_toggle_range(struct list *list);
 
 #endif //NCMPCLONE_LIST_H

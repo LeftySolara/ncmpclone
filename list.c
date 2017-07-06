@@ -211,7 +211,11 @@ void list_move_direction(struct list *list, enum direction direction)
             list->top_visible = list->top_visible->next;
             list->bottom_visible = list->bottom_visible->next;
         }
-        current->highlight = false;
+
+        /* For when we've already moved up in the range selection */
+        if (!list->range_select || list->range_head_index > list->selected_index)
+            current->highlight = false;
+
         current->next->highlight = true;
         list->selected = current->next;
         ++list->selected_index;
@@ -222,13 +226,17 @@ void list_move_direction(struct list *list, enum direction direction)
             list->top_visible = list->top_visible->prev;
             list->bottom_visible = list->bottom_visible->prev;
         }
-        current->highlight = false;
+
+        /* For when we've already moved down in the range selection */
+        if (!list->range_select || list->range_head_index < list->selected_index)
+            current->highlight = false;
+
         current->prev->highlight = true;
         list->selected = current->prev;
         --list->selected_index;
     }
 
-     list_draw(list);
+    list_draw(list);
 }
 
 /* Move the cursor to the top or bottom of the list */
@@ -315,5 +323,23 @@ void list_find_bottom_visible(struct list *list)
     while (list->bottom_visible->next && i < list->max_visible) {
         list->bottom_visible = list->bottom_visible->next;
         ++i;
+    }
+}
+
+void list_toggle_range(struct list *list)
+{
+    list->range_select = !list->range_select;
+    list->range_head = (list->range_select) ? list->selected : NULL;
+    list->range_head_index = (list->range_select) ? list->selected_index : -1;
+
+    /* Clear the range selection */
+    if (!list->range_select && list->head) {
+        struct list_item *current = list->head;
+        while (current) {
+            if (current != list->selected)
+                current->highlight = false;
+            current = current->next;
+        }
+        list_draw(list);
     }
 }

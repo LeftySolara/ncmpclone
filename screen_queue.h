@@ -27,6 +27,7 @@
 #include "mpd_info.h"
 #include "list.h"
 #include "command.h"
+#include "status_bar.h"
 #include <stdbool.h>
 #include <ncurses.h>
 
@@ -73,7 +74,7 @@ static inline void screen_queue_clear(struct screen_queue *screen_queue) {
     list_clear(screen_queue->list);
 }
 
-void screen_queue_cmd(command_t cmd, struct screen_queue *screen);
+void screen_queue_cmd(command_t cmd, struct screen_queue *screen, struct status_bar *status_bar);
 
 
 #endif //NCMPCLONE_SCREEN_QUEUE_H

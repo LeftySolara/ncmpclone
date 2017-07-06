@@ -97,6 +97,9 @@ static command_def_t cmds[] = {
         {CMD_LIST_PAGE_DOWN, {KEY_NPAGE, 0, 0}, "Page down",
         "Page down"},
 
+        {CMD_LIST_TOGGLE_RANGE_SELECT, {'v', 0, 0}, "Range selection",
+        "Range selection"},
+
         {CMD_CLEAR_QUEUE, {'c', 0, 0}, "Clear Queue",
         "Clear queue"},
 

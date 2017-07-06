@@ -140,7 +140,7 @@ char *create_duration_label(struct mpd_song *song)
     return buffer;
 }
 
-void screen_queue_cmd(command_t cmd, struct screen_queue *screen)
+void screen_queue_cmd(command_t cmd, struct screen_queue *screen, struct status_bar *status_bar)
 {
     switch (cmd) {
         case CMD_LIST_MOVE_UP:
@@ -176,8 +176,16 @@ void screen_queue_cmd(command_t cmd, struct screen_queue *screen)
         case CMD_LIST_PAGE_DOWN:
             screen_queue_scroll_page(screen, DOWN);
             break;
+        case CMD_LIST_TOGGLE_RANGE_SELECT:
+            list_toggle_range(screen->list);
+            if (screen->list->range_select)
+                status_bar_show_notification(status_bar, "Range selection enabled", 3);
+            else
+                status_bar_show_notification(status_bar, "Range selection disabled", 3);
+            break;
         case CMD_PLAY:
-            mpd_run_play_pos(mpd_info->connection, screen->list->selected_index);
+            if (!screen->list->range_select)
+                mpd_run_play_pos(mpd_info->connection, screen->list->selected_index);
             break;
         case CMD_CLEAR_QUEUE:
             mpd_run_clear(mpd_info->connection);
