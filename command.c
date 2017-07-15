@@ -58,6 +58,21 @@ static command_def_t cmds[] = {
         {CMD_RANDOM, {'z', 0, 0}, "Random",
         "Toggle random mode"},
 
+        {CMD_REPEAT, {'r', 0, 0}, "Repeat",
+        "Toggle repeat mode"},
+
+        {CMD_SINGLE, {'y', 0, 0}, "Single",
+        "Toggle single mode"},
+
+        {CMD_CONSUME, {'C', 0, 0}, "Consume",
+        "Toggle consume mode"},
+
+        {CMD_CROSSFADE, {'x', 0, 0}, "Crossfade",
+        "Toggle crossfade mode"},
+
+        {CMD_DB_UPDATE, {KEY_CTRL('u'), 0, 0}, "Update",
+        "Start a music database update"},
+
         {CMD_SHUFFLE, {'Z', 0, 0}, "Shuffle",
         "Shuffle queue"},
 

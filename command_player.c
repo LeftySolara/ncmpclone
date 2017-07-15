@@ -26,6 +26,7 @@
 
 void player_cmd(command_t cmd, struct status_bar *status_bar)
 {
+    char *notification;
     switch(cmd) {
         case CMD_NONE:
             break;
@@ -66,9 +67,36 @@ void player_cmd(command_t cmd, struct status_bar *status_bar)
             break;
         case CMD_RANDOM:
             mpd_run_random(mpd_info->connection, !mpd_status_get_random(mpd_info->status));
-            char *notification;
             notification = !mpd_status_get_random(mpd_info->status) ?
-                                       "Random mode is on" : "Random mode is off";
+                           "Random mode is on" : "Random mode is off";
+            status_bar_show_notification(status_bar, notification, 3);
+            break;
+        case CMD_REPEAT:
+            mpd_run_repeat(mpd_info->connection, !mpd_status_get_repeat(mpd_info->status));
+            notification = !mpd_status_get_repeat(mpd_info->status) ?
+                           "Repeat mode is on" : "Repeat mode is off";
+            status_bar_show_notification(status_bar, notification, 3);
+            break;
+        case CMD_SINGLE:
+            mpd_run_single(mpd_info->connection, !mpd_status_get_single(mpd_info->status));
+            notification = !mpd_status_get_single(mpd_info->status) ?
+                           "Single mode is on" : "Single mode is off";
+            status_bar_show_notification(status_bar, notification, 3);
+            break;
+         case CMD_CONSUME:
+            mpd_run_consume(mpd_info->connection, !mpd_status_get_consume(mpd_info->status));
+            notification = !mpd_status_get_consume(mpd_info->status) ?
+                           "Consume mode is on" : "Consume mode is off";
+            status_bar_show_notification(status_bar, notification, 3);
+            break;
+        case CMD_CROSSFADE:
+            if (mpd_status_get_crossfade(mpd_info->status) == 0)
+                mpd_run_crossfade(mpd_info->connection, 10);
+            else
+                mpd_run_crossfade(mpd_info->connection, 0);
+
+            notification = !(mpd_status_get_crossfade(mpd_info->status) == 0) ?
+                           "Crossfade 0 seconds" : "Crossfade 10 seconds";
             status_bar_show_notification(status_bar, notification, 3);
             break;
         case CMD_VOL_UP:

@@ -57,11 +57,16 @@ static command_t global_cmds[] = {
         CMD_PREV_SONG,
         CMD_SEEK_FORWARD,
         CMD_SEEK_BACKWARD,
-        CMD_RANDOM,
         CMD_VOL_UP,
         CMD_VOL_DOWN,
         CMD_NONE,
+        CMD_REPEAT,
+        CMD_RANDOM,
+        CMD_SINGLE,
+        CMD_CONSUME,
+        CMD_CROSSFADE,
         CMD_SHUFFLE,
+        CMD_DB_UPDATE,
         CMD_NONE,
         CMD_QUIT
 };

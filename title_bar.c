@@ -65,6 +65,20 @@ void title_bar_draw(struct title_bar *title_bar)
     wmove(title_bar->win, 1, 0);
     whline(title_bar->win, ACS_HLINE, title_bar->width);
 
+    char *modes = calloc(5, sizeof(char));
+    if (mpd_status_get_repeat(mpd_info->status))
+        strcat(modes, "r");
     if (mpd_status_get_random(mpd_info->status))
-        mvwaddstr(title_bar->win, 1, COLS - strlen("[z]") - 1, "[z]");
+        strcat(modes, "z");
+    if (mpd_status_get_single(mpd_info->status))
+        strcat(modes, "s");
+    if (mpd_status_get_consume(mpd_info->status))
+        strcat(modes, "c");
+
+    if (strlen(modes) > 0) {
+        mvwaddch(title_bar->win, 1, COLS - strlen(modes) - 3, '[');
+        waddstr(title_bar->win, modes);
+        waddch(title_bar->win, ']');
+    }
+    free(modes);
 }

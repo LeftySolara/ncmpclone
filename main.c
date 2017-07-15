@@ -161,6 +161,8 @@ void mpd_setup(char *host, char *port, char *timeout)
 void global_cmd(command_t cmd, struct status_bar *status_bar)
 {
     switch(cmd) {
+        unsigned rc;
+        char * notification;
         case CMD_CROP:
             if (mpd_status_get_state(mpd_info->status) != MPD_STATE_PLAY)
                 break;
@@ -175,6 +177,12 @@ void global_cmd(command_t cmd, struct status_bar *status_bar)
                 break;
             mpd_run_shuffle(mpd_info->connection);
             status_bar_show_notification(status_bar, "Shuffled queue", 3);
+            break;
+        case CMD_DB_UPDATE:
+            status_bar_show_notification(status_bar, "Database update started", 3);
+            rc = mpd_run_update(mpd_info->connection, NULL);
+            notification = (rc == 0) ? "Error updating music database" : "Database updated";
+            status_bar_show_notification(status_bar, notification, 3);
             break;
     }
 }
