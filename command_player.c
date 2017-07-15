@@ -47,6 +47,23 @@ void player_cmd(command_t cmd, struct status_bar *status_bar)
             else
                 mpd_run_previous(mpd_info->connection);
             break;
+        case CMD_SEEK_FORWARD:
+            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_PLAY
+                    && mpd_status_get_elapsed_time(mpd_info->status)
+                    != mpd_status_get_total_time(mpd_info->status)) {
+                mpd_run_seek_pos(mpd_info->connection,
+                                 mpd_song_get_pos(mpd_info->current_song),
+                                 mpd_status_get_elapsed_time(mpd_info->status) + 1);
+            }
+            break;
+        case CMD_SEEK_BACKWARD:
+            if (mpd_status_get_state(mpd_info->status) == MPD_STATE_PLAY
+                    && mpd_status_get_elapsed_time(mpd_info->status) > 0) {
+                mpd_run_seek_pos(mpd_info->connection,
+                                 mpd_song_get_pos(mpd_info->current_song),
+                                 mpd_status_get_elapsed_time(mpd_info->status) - 1);
+            }
+            break;
         case CMD_RANDOM:
             mpd_run_random(mpd_info->connection, !mpd_status_get_random(mpd_info->status));
             char *notification;

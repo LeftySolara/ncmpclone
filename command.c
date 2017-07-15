@@ -43,6 +43,12 @@ static command_def_t cmds[] = {
         {CMD_STOP, {'s', KEY_BACKSPACE, 0}, "Stop",
         "Stop"},
 
+        {CMD_SEEK_FORWARD, {'f', 0 ,0}, "Seek forward",
+        "Seek forward"},
+
+        {CMD_SEEK_BACKWARD, {'b', 0, 0}, "Seek backward",
+        "Seek backward"},
+
         {CMD_NEXT_SONG, {'>', 0, 0}, "Next song",
         "Next song"},
 

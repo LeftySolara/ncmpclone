@@ -31,6 +31,8 @@ typedef enum {
     CMD_PLAY,
     CMD_PAUSE,
     CMD_STOP,
+    CMD_SEEK_FORWARD,
+    CMD_SEEK_BACKWARD,
     CMD_NEXT_SONG,
     CMD_PREV_SONG,
     CMD_RANDOM,
