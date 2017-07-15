@@ -50,9 +50,9 @@ static command_t movement_cmds[] = {
 };
 
 static command_t global_cmds[] = {
+        CMD_STOP,
         CMD_PAUSE,
         CMD_CROP,
-        CMD_STOP,
         CMD_NEXT_SONG,
         CMD_PREV_SONG,
         CMD_SEEK_FORWARD,
@@ -60,6 +60,7 @@ static command_t global_cmds[] = {
         CMD_RANDOM,
         CMD_VOL_UP,
         CMD_VOL_DOWN,
+        CMD_NONE,
         CMD_SHUFFLE,
         CMD_NONE,
         CMD_QUIT
