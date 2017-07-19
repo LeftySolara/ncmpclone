@@ -46,7 +46,8 @@ static command_t movement_cmds[] = {
         CMD_LIST_SCROLL_HALF_UP,
         CMD_NONE,
         CMD_SCREEN_HELP,
-        CMD_SCREEN_QUEUE
+        CMD_SCREEN_QUEUE,
+        CMD_SCREEN_BROWSE
 };
 
 static command_t global_cmds[] = {

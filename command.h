@@ -62,6 +62,7 @@ typedef enum {
     CMD_CLEAR_QUEUE,
     CMD_SCREEN_HELP,
     CMD_SCREEN_QUEUE,
+    CMD_SCREEN_BROWSE,
     CMD_QUIT
 } command_t;
 

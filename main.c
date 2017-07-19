@@ -23,6 +23,7 @@
 
 #include "mpd_info.h"
 #include "screen_queue.h"
+#include "screen_browse.h"
 #include "screen_help.h"
 #include "title_bar.h"
 #include "status_bar.h"
@@ -33,7 +34,7 @@
 #include <stdlib.h>
 #include <locale.h>
 
-#define NUM_PANELS 2
+#define NUM_PANELS 3
 
 enum mpd_error mpd_err;
 enum main_screen {HELP, QUEUE, BROWSE, ARTIST, SEARCH, LYRICS, OUTPUTS};
@@ -66,16 +67,19 @@ int main(int argc, char *argv[])
     struct status_bar *status_bar = status_bar_init();
     struct screen_help *screen_help = screen_help_init();
     struct screen_queue *screen_queue = screen_queue_init();
+    struct screen_browse *screen_browse = screen_browse_init();
 
     enum main_screen visible_screen = QUEUE;
-    PANEL *screen_panels[2];
+    PANEL *screen_panels[NUM_PANELS];
     WINDOW *screen_wins[] = {
             screen_help->win,
-            screen_queue->list->win
+            screen_queue->list->win,
+            screen_browse->list->win
     };
 
     screen_panels[HELP] = new_panel(screen_wins[HELP]);
     screen_panels[QUEUE] = new_panel(screen_wins[QUEUE]);
+    screen_panels[BROWSE] = new_panel(screen_wins[BROWSE]);
     update_panels();
     doupdate();
 
@@ -86,15 +90,12 @@ int main(int argc, char *argv[])
     status_bar_draw(status_bar);
     screen_help_draw(screen_help);
     screen_queue_draw(screen_queue);
-
-    wnoutrefresh(title_bar->win);
-    wnoutrefresh(status_bar->win);
-    wnoutrefresh(screen_queue->list->win);
-
+    screen_browse_draw(screen_browse);
 
     int ch;
     command_t cmd;
     halfdelay(1); /* Dirty hack to prevent screen flickering. Will fix. */
+    top_panel(screen_panels[QUEUE]);
     while (cmd != CMD_QUIT) {
         mpd_connection_info_update(mpd_info);
         title_bar_update_volume(title_bar);
@@ -127,6 +128,7 @@ int main(int argc, char *argv[])
     status_bar_free(status_bar);
     screen_help_free(screen_help);
     screen_queue_free(screen_queue);
+    screen_browse_free(screen_browse);
 
     endwin();
     mpd_connection_info_free(mpd_info);
@@ -199,6 +201,11 @@ void screen_cmd(command_t cmd, enum main_screen *visible_screen,
         case CMD_SCREEN_QUEUE:
             *visible_screen = QUEUE;
             title_bar->title = screen_titles[QUEUE];
+            top_panel(panels[*visible_screen]);
+            break;
+        case CMD_SCREEN_BROWSE:
+            *visible_screen = BROWSE;
+            title_bar->title = screen_titles[BROWSE];
             top_panel(panels[*visible_screen]);
             break;
     }

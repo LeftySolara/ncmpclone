@@ -136,6 +136,9 @@ static command_def_t cmds[] = {
         {CMD_SCREEN_QUEUE, {'2', KEY_F(2), 0}, "Queue",
         "Queue screen"},
 
+        {CMD_SCREEN_BROWSE, {'3', KEY_F(3), 0}, "Browse",
+        "Browse screen"},
+
         {CMD_QUIT, {'q', 'Q', KEY_CTRL('c')}, "Quit",
         "Quit"}
 };
