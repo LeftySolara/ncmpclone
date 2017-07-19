@@ -64,6 +64,7 @@ void screen_queue_populate_list(struct screen_queue *screen_queue)
                          create_duration_label(song),
                          bold);
     }
+    mpd_response_finish(mpd_info->connection);
     screen_queue->queue_version = mpd_status_get_queue_version(mpd_info->status);
 }
 
