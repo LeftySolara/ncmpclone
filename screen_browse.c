@@ -49,14 +49,16 @@ void screen_browse_populate(struct screen_browse *screen)
     struct mpd_playlist *plist;
     struct mpd_entity *entity;
     enum mpd_entity_type et;
-    char *display_str;
+    char *dir_str;
+    char *display_str = calloc(500, sizeof(char));
 
     while ((entity = mpd_recv_entity(mpd_info->connection))) {
         et = mpd_entity_get_type(entity);
         switch (et) {
             case MPD_ENTITY_TYPE_DIRECTORY:
                 directory = mpd_entity_get_directory(entity);
-                display_str = mpd_directory_get_path(directory);
+                dir_str = mpd_directory_get_path(directory);
+                sprintf(display_str, "[%s]", dir_str);
                 break;
             case MPD_ENTITY_TYPE_SONG:
                 song = mpd_entity_get_song(entity);
@@ -69,7 +71,10 @@ void screen_browse_populate(struct screen_browse *screen)
         }
         list_append_item(screen->list, display_str, " ", false);
     }
+
     mpd_response_finish(mpd_info->connection);
+    if (display_str)
+        free(display_str);
 }
 
 void screen_browse_cmd(command_t cmd, struct screen_browse *screen,
