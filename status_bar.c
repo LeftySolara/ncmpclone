@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 #include "status_bar.h"
+#include "ncmpclone_ncurses.h"
 #include "mpd_info.h"
 #include <stdlib.h>
 #include <string.h>
@@ -75,7 +76,7 @@ void status_bar_draw(struct status_bar *bar)
         return;
 
     status_bar_draw_progress(bar);
-    char *track_label = create_song_label(mpd_info->current_song);
+    char *track_label = create_track_label(mpd_info->current_song);
     int state = mpd_status_get_state(mpd_info->status);
     char *state_label;
 
@@ -105,26 +106,6 @@ void status_bar_show_notification(struct status_bar *status_bar, char *notificat
 {
     status_bar->notification = notification;
     status_bar->notify_end = time(NULL) + duration;
-}
-
-// TODO: Move this function to a shared header (currently a copy-paste job)
-/* Create a song label of the format "artist - title" */
-char *create_song_label(struct mpd_song *song)
-{
-    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
-    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
-    char *buffer = malloc(strlen(artist) + strlen(title) + 4);
-
-    if (buffer == NULL) {
-        printf("Cannot create track label. No memory available.");
-    }
-    else {
-        strcpy(buffer, artist);
-        strcat(buffer, " - ");
-        strcat(buffer, title);
-    }
-
-    return buffer;
 }
 
 /* Create and return a string with the progress of the currently playing song */

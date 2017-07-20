@@ -22,9 +22,8 @@
  ***************************************************************************/
 
 #include "screen_queue.h"
+#include "ncmpclone_ncurses.h"
 #include <stdlib.h>
-#include <string.h>
-
 
 struct screen_queue *screen_queue_init()
 {
@@ -50,6 +49,8 @@ void screen_queue_populate_list(struct screen_queue *screen_queue)
         return;
 
     struct mpd_song *song;
+    char *track_label;
+    char *duration_label;
     bool bold;
     mpd_send_list_queue_meta(mpd_info->connection);
 
@@ -59,10 +60,11 @@ void screen_queue_populate_list(struct screen_queue *screen_queue)
                && mpd_status_get_state(mpd_info->status) != MPD_STATE_STOP) ?
                true : false;
 
-        list_append_item(screen_queue->list,
-                         create_track_label(song),
-                         create_duration_label(song),
-                         bold);
+        track_label = create_track_label(song);
+        duration_label = create_duration_label(song);
+        list_append_item(screen_queue->list, track_label, duration_label, bold);
+        free(track_label);
+        free(duration_label);
     }
     mpd_response_finish(mpd_info->connection);
     screen_queue->queue_version = mpd_status_get_queue_version(mpd_info->status);
@@ -103,42 +105,6 @@ void screen_queue_update(struct screen_queue *screen_queue)
     screen_queue->list->selected_index = idx_selected;
     screen_queue->last_state = mpd_status_get_state(mpd_info->status);
     screen_queue_draw(screen_queue);
-}
-
-/* Create a song label of the format "artist - title" */
-char *create_track_label(struct mpd_song *song)
-{
-    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
-    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
-    char *buffer = malloc(strlen(artist) + strlen(title) + 4);
-
-    if (buffer == NULL) {
-        printf("Cannot create track label. No memory available.");
-    }
-    else {
-        strcpy(buffer, artist);
-        strcat(buffer, " - ");
-        strcat(buffer, title);
-    }
-
-    return buffer;
-}
-
-/* Create a human-readable string representing a song's duration */
-char *create_duration_label(struct mpd_song *song)
-{
-    const int buf_size = 7;
-    char *buffer = calloc(buf_size, sizeof(char));
-
-    if (buffer == NULL)
-        printf("Cannot create duration string: not enough memory available.");
-    else {
-        int minutes = mpd_song_get_duration(song) / 60;
-        int seconds = mpd_song_get_duration(song) % 60;
-        snprintf(buffer, buf_size, "%d:%02d", minutes, seconds);
-    }
-
-    return buffer;
 }
 
 void screen_queue_cmd(command_t cmd, struct screen_queue *screen, struct status_bar *status_bar)

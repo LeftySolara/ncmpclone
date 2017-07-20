@@ -43,8 +43,6 @@ void screen_queue_free(struct screen_queue *screen_queue);
 
 void screen_queue_populate_list(struct screen_queue *screen_queue);
 void screen_queue_update(struct screen_queue *screen_queue);
-char *create_track_label(struct mpd_song *song);
-char *create_duration_label(struct mpd_song *song);
 
 static inline void screen_queue_draw(struct screen_queue *screen_queue) {
     list_draw(screen_queue->list);
