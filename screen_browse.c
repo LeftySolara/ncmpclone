@@ -71,3 +71,58 @@ void screen_browse_populate(struct screen_browse *screen)
     }
     mpd_response_finish(mpd_info->connection);
 }
+
+void screen_browse_cmd(command_t cmd, struct screen_browse *screen,
+                       struct status_bar *status_bar)
+{
+    switch (cmd) {
+        case CMD_LIST_MOVE_UP:
+            screen_browse_move_cursor(screen, UP);
+            break;
+        case CMD_LIST_MOVE_DOWN:
+            screen_browse_move_cursor(screen, DOWN);
+            break;
+        case CMD_LIST_MOVE_TOP:
+            screen_browse_move_pos(screen, TOP);
+            break;
+        case CMD_LIST_MOVE_BOTTOM:
+            screen_browse_move_pos(screen, BOT);
+            break;
+        case CMD_LIST_MOVE_SCREEN_TOP:
+            screen_browse_move_screen_pos(screen, TOP);
+            break;
+        case CMD_LIST_MOVE_SCREEN_MID:
+            screen_browse_move_screen_pos(screen, MID);
+            break;
+        case CMD_LIST_MOVE_SCREEN_BOTTOM:
+            screen_browse_move_screen_pos(screen, BOT);
+            break;
+        case CMD_LIST_SCROLL_LINE_UP:
+            screen_browse_scroll_line(screen, UP);
+            break;
+        case CMD_LIST_SCROLL_LINE_DOWN:
+            screen_browse_scroll_line(screen, DOWN);
+            break;
+        case CMD_LIST_SCROLL_HALF_UP:
+            screen_browse_scroll_half_page(screen, UP);
+            break;
+        case CMD_LIST_SCROLL_HALF_DOWN:
+            screen_browse_scroll_half_page(screen, DOWN);
+            break;
+        case CMD_LIST_PAGE_UP:
+            screen_browse_scroll_page(screen, UP);
+            break;
+        case CMD_LIST_PAGE_DOWN:
+            screen_browse_scroll_page(screen, DOWN);
+            break;
+        case CMD_LIST_TOGGLE_RANGE_SELECT:
+            list_toggle_range(screen->list);
+            if (screen->list->range_select)
+                status_bar_show_notification(status_bar,
+                                             "Range selection enabled", 3);
+            else
+                status_bar_show_notification(status_bar,
+                                             "Range selection disabled", 3);
+            break;
+    }
+}

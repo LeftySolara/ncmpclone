@@ -25,6 +25,8 @@
 #define NCMPCLONE_SCREEN_BROWSE_H
 
 #include "list.h"
+#include "command.h"
+#include "status_bar.h"
 
 struct screen_browse {
     struct list *list;
@@ -34,9 +36,40 @@ struct screen_browse *screen_browse_init();
 void screen_browse_free(struct screen_browse *screen);
 
 void screen_browse_populate(struct screen_browse *screen);
+void screen_browse_cmd(command_t cmd, struct screen_browse *screen,
+                       struct status_bar *status_bar);
+
 
 static inline void screen_browse_draw(struct screen_browse *screen) {
     list_draw(screen->list);
+}
+
+static inline void screen_browse_move_cursor(struct screen_browse *screen, enum direction direction) {
+    list_move_direction(screen->list, direction);
+}
+
+static inline void screen_browse_move_pos(struct screen_browse *screen, enum screen_pos pos) {
+    list_move_to_pos(screen->list, pos);
+}
+
+static inline void screen_browse_move_screen_pos(struct screen_browse *screen, enum screen_pos pos) {
+    list_move_to_screen_pos(screen->list, pos);
+}
+
+static inline void screen_browse_scroll_line(struct screen_browse *screen, enum direction direction) {
+    list_scroll_line(screen->list, direction);
+}
+
+static inline void screen_browse_scroll_page(struct screen_browse *screen, enum direction direction) {
+    list_scroll_page(screen->list, direction);
+}
+
+static inline void screen_browse_clear(struct screen_browse *screen) {
+    list_clear(screen->list);
+}
+
+static inline void screen_browse_scroll_half_page(struct screen_browse *screen, enum direction direction) {
+    list_scroll_half_page(screen->list, direction);
 }
 
 #endif //NCMPCLONE_SCREEN_BROWSE_H
