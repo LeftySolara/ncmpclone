@@ -33,6 +33,8 @@ struct screen_browse {
 struct screen_browse *screen_browse_init();
 void screen_browse_free(struct screen_browse *screen);
 
+void screen_browse_populate(struct screen_browse *screen);
+
 static inline void screen_browse_draw(struct screen_browse *screen) {
     list_draw(screen->list);
 }

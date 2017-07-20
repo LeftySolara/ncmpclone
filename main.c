@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 
     title_bar_update_volume(title_bar);
     screen_queue_populate_list(screen_queue);
+    screen_browse_populate(screen_browse);
 
     title_bar_draw(title_bar);
     status_bar_draw(status_bar);
