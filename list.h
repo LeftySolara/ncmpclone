@@ -1,5 +1,5 @@
 /******************************************************************************
- * list.c : functionality for displaying lists on the screen
+ * list.h : functionality for displaying lists on the screen
  * ****************************************************************************
  * Copyright (C) 2017 Jalen Adams
  *

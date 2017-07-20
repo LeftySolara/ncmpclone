@@ -23,10 +23,47 @@
 
 #include "ncmpclone_ncurses.h"
 #include <stdlib.h>
+#include <string.h>
 #include <ncurses.h>
 
 #define KEY_CTRL(x) ((x) & 0x1f)
 #define KEY_RETURN 10
+
+/* Create a song label of the format "artist - title" */
+char *create_track_label(struct mpd_song *song)
+{
+    const char *artist = mpd_song_get_tag(song, MPD_TAG_ARTIST, 0);
+    const char *title = mpd_song_get_tag(song, MPD_TAG_TITLE, 0);
+    char *buffer = malloc(strlen(artist) + strlen(title) + 4);
+
+    if (buffer == NULL) {
+        printf("Cannot create track label. No memory available.");
+    }
+    else {
+        strcpy(buffer, artist);
+        strcat(buffer, " - ");
+        strcat(buffer, title);
+    }
+
+    return buffer;
+}
+
+/* Create a human-readable string representing a song's duration */
+char *create_duration_label(struct mpd_song *song)
+{
+    const int buf_size = 7;
+    char *buffer = calloc(buf_size, sizeof(char));
+
+    if (buffer == NULL)
+        printf("Cannot create duration string: not enough memory available.");
+    else {
+        int minutes = mpd_song_get_duration(song) / 60;
+        int seconds = mpd_song_get_duration(song) % 60;
+        snprintf(buffer, buf_size, "%d:%02d", minutes, seconds);
+    }
+
+    return buffer;
+}
 
 char *key_to_str(int key)
 {

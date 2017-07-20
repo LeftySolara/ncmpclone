@@ -24,6 +24,10 @@
 #ifndef NCMPCLONE_NCMPCLONE_NCURSES_H
 #define NCMPCLONE_NCMPCLONE_NCURSES_H
 
+#include "mpd_info.h"
+
+char *create_track_label(struct mpd_song *song);
+char *create_duration_label(struct mpd_song *song);
 char *key_to_str(int key);
 
 #endif //NCMPCLONE_NCMPCLONE_NCURSES_H

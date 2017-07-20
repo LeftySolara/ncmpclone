@@ -28,8 +28,11 @@
 struct list_item *list_item_init(char *left, char *right, bool bold, bool highlight)
 {
     struct list_item *item = malloc(sizeof(*item));
-    item->left_str = left;
-    item->right_str = right;
+    item->left_str = malloc(strlen(left) + 1);
+    item->right_str = malloc(strlen(right) + 1);
+    sprintf(item->left_str, left);
+    sprintf(item->right_str, right);
+
     item->bold = bold;
     item->highlight = highlight;
     item->prev = NULL;
