@@ -29,47 +29,49 @@
 #include "status_bar.h"
 
 struct screen_browse {
-    struct list *list;
+    struct list *browse_list;
+    char *current_path;
 };
 
 struct screen_browse *screen_browse_init();
 void screen_browse_free(struct screen_browse *screen);
 
-void screen_browse_populate(struct screen_browse *screen);
+void screen_browse_populate_dir(struct screen_browse *screen, const char *path);
+void screen_browse_select(struct screen_browse *screen);
+
 void screen_browse_cmd(command_t cmd, struct screen_browse *screen,
                        struct status_bar *status_bar);
 
-
 static inline void screen_browse_draw(struct screen_browse *screen) {
-    list_draw(screen->list);
+    list_draw(screen->browse_list);
 }
 
 static inline void screen_browse_move_cursor(struct screen_browse *screen, enum direction direction) {
-    list_move_direction(screen->list, direction);
+    list_move_direction(screen->browse_list, direction);
 }
 
 static inline void screen_browse_move_pos(struct screen_browse *screen, enum screen_pos pos) {
-    list_move_to_pos(screen->list, pos);
+    list_move_to_pos(screen->browse_list, pos);
 }
 
 static inline void screen_browse_move_screen_pos(struct screen_browse *screen, enum screen_pos pos) {
-    list_move_to_screen_pos(screen->list, pos);
+    list_move_to_screen_pos(screen->browse_list, pos);
 }
 
 static inline void screen_browse_scroll_line(struct screen_browse *screen, enum direction direction) {
-    list_scroll_line(screen->list, direction);
+    list_scroll_line(screen->browse_list, direction);
 }
 
 static inline void screen_browse_scroll_page(struct screen_browse *screen, enum direction direction) {
-    list_scroll_page(screen->list, direction);
+    list_scroll_page(screen->browse_list, direction);
 }
 
 static inline void screen_browse_clear(struct screen_browse *screen) {
-    list_clear(screen->list);
+    list_clear(screen->browse_list);
 }
 
 static inline void screen_browse_scroll_half_page(struct screen_browse *screen, enum direction direction) {
-    list_scroll_half_page(screen->list, direction);
+    list_scroll_half_page(screen->browse_list, direction);
 }
 
 #endif //NCMPCLONE_SCREEN_BROWSE_H

@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     WINDOW *screen_wins[] = {
             screen_help->win,
             screen_queue->list->win,
-            screen_browse->list->win
+            screen_browse->browse_list->win
     };
 
     screen_panels[HELP] = new_panel(screen_wins[HELP]);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
 
     title_bar_update_volume(title_bar);
     screen_queue_populate_list(screen_queue);
-    screen_browse_populate(screen_browse);
+    screen_browse_populate_dir(screen_browse, NULL);
 
     title_bar_draw(title_bar);
     status_bar_draw(status_bar);
