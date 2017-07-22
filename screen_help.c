@@ -148,12 +148,32 @@ void screen_help_cmd(command_t cmd, struct screen_help *screen)
 {
     switch(cmd) {
         case CMD_LIST_MOVE_DOWN:
-            if (screen->y_pos_top + screen->win->_maxy != screen->pad->_maxy)
+            if (screen->y_pos_top + screen->win->_maxy < screen->pad->_maxy)
                 copywin(screen->pad, screen->win, ++screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
             break;
         case CMD_LIST_MOVE_UP:
-            if (screen->y_pos_top != 0)
+            if (screen->y_pos_top > 0)
                 copywin(screen->pad, screen->win, --screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
+            break;
+        case CMD_LIST_PAGE_DOWN:
+            screen->y_pos_top += screen->win->_maxy;
+            if (screen->y_pos_top > screen->pad->_maxy - screen->win->_maxy)
+                screen->y_pos_top = screen->pad->_maxy - screen->win->_maxy;
+            copywin(screen->pad, screen->win, screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
+            break;
+        case CMD_LIST_PAGE_UP:
+            screen->y_pos_top -= screen->win->_maxy;
+            if (screen->y_pos_top < 0)
+                screen->y_pos_top = 0;
+            copywin(screen->pad, screen->win, screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
+            break;
+        case CMD_LIST_MOVE_TOP:
+            screen->y_pos_top = 0;
+            copywin(screen->pad, screen->win, screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
+            break;
+        case CMD_LIST_MOVE_BOTTOM:
+            screen->y_pos_top = screen->pad->_maxy - screen->win->_maxy;
+            copywin(screen->pad, screen->win, screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
             break;
     }
 }

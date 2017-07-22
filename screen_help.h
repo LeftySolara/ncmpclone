@@ -30,7 +30,7 @@
 struct screen_help {
     WINDOW *win;
     WINDOW *pad;
-    unsigned int y_pos_top;
+    int y_pos_top;
 };
 
 struct screen_help *screen_help_init();
