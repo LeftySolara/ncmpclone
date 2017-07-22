@@ -29,6 +29,7 @@
 
 struct screen_help {
     WINDOW *win;
+    WINDOW *pad;
 };
 
 struct screen_help *screen_help_init();
