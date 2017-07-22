@@ -77,12 +77,17 @@ static command_t queue_screen_cmds[] = {
         CMD_CLEAR_QUEUE
 };
 
+static command_t browse_screen_cmds[] = {
+        CMD_DIR_ENTER
+};
+
 struct screen_help *screen_help_init()
 {
     struct screen_help *screen = malloc(sizeof(*screen));
     screen->win = newwin(LINES - 4, COLS, 2, 0);
 
-    screen->pad = newpad(NELEMS(movement_cmds) + NELEMS(global_cmds) + NELEMS(queue_screen_cmds) + 8,
+    screen->pad = newpad(NELEMS(movement_cmds) + NELEMS(global_cmds)
+                         + NELEMS(queue_screen_cmds) + NELEMS(browse_screen_cmds) + 11,
                          COLS);
 
     screen->y_pos_top = 0;
@@ -112,6 +117,11 @@ void screen_help_draw(struct screen_help *screen)
     screen_help_draw_header(screen, y++, "Queue screen");
     for (int i = 0; i < NELEMS(queue_screen_cmds); ++i)
         screen_help_draw_command(screen, ++y, queue_screen_cmds[i]);
+
+    y += 2;
+    screen_help_draw_header(screen, y++, "Browse screen");
+    for (int i = 0; i < NELEMS(queue_screen_cmds); ++i)
+        screen_help_draw_command(screen, ++y, browse_screen_cmds[i]);
 
     copywin(screen->pad, screen->win, 0, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
 }

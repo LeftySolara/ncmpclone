@@ -127,6 +127,9 @@ static command_def_t cmds[] = {
         {CMD_LIST_TOGGLE_RANGE_SELECT, {'v', 0, 0}, "Range selection",
         "Range selection"},
 
+        {CMD_DIR_ENTER, {KEY_RETURN, 0, 0}, "Enter directory",
+        "Enter directory/Select and play song"},
+
         {CMD_CLEAR_QUEUE, {'c', 0, 0}, "Clear Queue",
         "Clear queue"},
 
