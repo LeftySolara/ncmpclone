@@ -81,8 +81,10 @@ struct screen_help *screen_help_init()
     struct screen_help *screen = malloc(sizeof(*screen));
     screen->win = newwin(LINES - 4, COLS, 2, 0);
 
-    screen->pad = newpad(NELEMS(movement_cmds) + NELEMS(global_cmds) + NELEMS(queue_screen_cmds) + 16,
+    screen->pad = newpad(NELEMS(movement_cmds) + NELEMS(global_cmds) + NELEMS(queue_screen_cmds) + 8,
                          COLS);
+
+    screen->y_pos_top = 0;
 }
 
 void screen_help_free(struct screen_help *screen)
@@ -105,7 +107,7 @@ void screen_help_draw(struct screen_help *screen)
     for (int i = 0; i < NELEMS(global_cmds); ++i)
         screen_help_draw_command(screen, ++y, global_cmds[i]);
 
-    y+= 2;
+    y += 2;
     screen_help_draw_header(screen, y++, "Queue screen");
     for (int i = 0; i < NELEMS(queue_screen_cmds); ++i)
         screen_help_draw_command(screen, ++y, queue_screen_cmds[i]);
@@ -140,4 +142,18 @@ void screen_help_draw_command(struct screen_help *screen, const int begin_y, com
     waddstr(screen->pad, " : ");
     waddstr(screen->pad, desc);
     free(cmd_keys);
+}
+
+void screen_help_cmd(command_t cmd, struct screen_help *screen)
+{
+    switch(cmd) {
+        case CMD_LIST_MOVE_DOWN:
+            if (screen->y_pos_top + screen->win->_maxy != screen->pad->_maxy)
+                copywin(screen->pad, screen->win, ++screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
+            break;
+        case CMD_LIST_MOVE_UP:
+            if (screen->y_pos_top != 0)
+                copywin(screen->pad, screen->win, --screen->y_pos_top, 0, 0, 0, screen->win->_maxy, screen->win->_maxx, 0);
+            break;
+    }
 }

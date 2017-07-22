@@ -105,6 +105,9 @@ int main(int argc, char *argv[])
         cmd = find_key_command(ch);
 
         switch(visible_screen) {
+            case HELP:
+                screen_help_cmd(cmd, screen_help);
+                break;
             case QUEUE:
                 screen_queue_update(screen_queue);
                 screen_queue_cmd(cmd, screen_queue, status_bar);

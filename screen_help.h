@@ -30,6 +30,7 @@
 struct screen_help {
     WINDOW *win;
     WINDOW *pad;
+    unsigned int y_pos_top;
 };
 
 struct screen_help *screen_help_init();
@@ -37,5 +38,6 @@ void screen_help_free(struct screen_help *screen);
 void screen_help_draw(struct screen_help *screen);
 void screen_help_draw_header(struct screen_help *screen, const int begin_y, char *title);
 void screen_help_draw_command(struct screen_help *screen, const int begin_y, command_t cmd);
+void screen_help_cmd(command_t cmd, struct screen_help *screen);
 
 #endif //NCMPCLONE_SCREEN_HELP_H
